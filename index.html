@@ -45,7 +45,7 @@
     <div id="tela-login" class="flex h-screen w-full items-center justify-center bg-slate-900 absolute z-[100] px-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
             <div class="h-16 w-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-church"></i></div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-1">UNEC<span class="text-blue-600">System</span></h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-1">Painel <span class="text-blue-600">UNEC</span></h2>
             <p class="text-sm text-gray-500 mb-8">Faça login para acessar o painel</p>
             <form onsubmit="fazerLogin(event)" class="space-y-4">
                 <div class="relative"><i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-400"></i><input type="text" id="login-user" required placeholder="Usuário" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-left cursor-text"></div>
@@ -61,14 +61,25 @@
         
         <!-- MENU LATERAL (DESKTOP) -->
         <aside class="w-64 bg-slate-900 text-white flex-col shadow-xl flex-shrink-0 z-20 hidden md:flex">
-            <div class="h-16 flex items-center px-6 border-b border-slate-700 bg-slate-950"><i class="fa-solid fa-church text-blue-400 text-xl mr-3"></i><h1 class="text-lg font-bold tracking-wider">UNEC<span class="text-blue-400">System</span></h1></div>
+            <div class="h-16 flex items-center px-6 border-b border-slate-700 bg-slate-950"><i class="fa-solid fa-church text-blue-400 text-xl mr-3"></i><h1 class="text-lg font-bold tracking-wider">Painel <span class="text-blue-400">UNEC</span></h1></div>
             <nav class="flex-1 px-4 py-6 space-y-2">
                 <button onclick="mudarAba('relatorios')" id="btn-relatorios" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-ativo"><i class="fa-solid fa-chart-pie w-6 text-left"></i><span class="font-medium">Relatórios</span></button>
                 <button onclick="limparFormulario(); mudarAba('cadastro')" id="btn-cadastro" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-inativo"><i class="fa-solid fa-user-plus w-6 text-left"></i><span class="font-medium">Cadastrar</span></button>
                 <button onclick="mudarAba('consulta')" id="btn-consulta" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-inativo"><i class="fa-solid fa-magnifying-glass w-6 text-left"></i><span class="font-medium">Consulta</span></button>
                 <button onclick="mudarAba('faturar')" id="btn-faturar" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-inativo"><i class="fa-solid fa-file-invoice-dollar w-6 text-left"></i><span class="font-medium">Faturar</span></button>
             </nav>
-            <div class="p-4 border-t border-slate-700 bg-slate-950"><div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">J</div><div><p class="text-sm font-medium">Jeovanne</p><p class="text-xs text-slate-400">Administrador</p></div></div><button onclick="sairSistema()" class="text-slate-400 hover:text-red-400 transition-colors" title="Sair"><i class="fa-solid fa-right-from-bracket"></i></button></div></div>
+            <div class="p-4 border-t border-slate-700 bg-slate-950">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold"><i class="fa-solid fa-user"></i></div>
+                        <div>
+                            <p class="text-sm font-medium">Administrador</p>
+                            <p class="text-xs text-slate-400">Sistema</p>
+                        </div>
+                    </div>
+                    <button onclick="sairSistema()" class="text-slate-400 hover:text-red-400 transition-colors" title="Sair"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+            </div>
         </aside>
 
         <!-- ÁREA CENTRAL -->
