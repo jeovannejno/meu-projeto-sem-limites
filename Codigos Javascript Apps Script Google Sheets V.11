@@ -1,0 +1,87 @@
+function doPost(e) {
+  var data = JSON.parse(e.postData.contents);
+  
+  // 1. SISTEMA DE LOGIN (Oculto no servidor)
+  if (data.acao === "login") {
+    // Altere o usuário e senha aqui quando for vender para um cliente novo
+    var userCorreto = "admin";
+    var senhaCorreta = "unec2026";
+    
+    if (data.usuario === userCorreto && data.senha === senhaCorreta) {
+      return ContentService.createTextOutput(JSON.stringify({"status": "sucesso"})).setMimeType(ContentService.MimeType.JSON);
+    } else {
+      return ContentService.createTextOutput(JSON.stringify({"status": "erro"})).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // 2. SISTEMA DE FILA / PROTEÇÃO DE DADOS (Evita sobrescrita simultânea)
+  var lock = LockService.getScriptLock();
+  
+  try {
+    // Aguarda na fila por até 10 segundos
+    lock.waitLock(10000); 
+    
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0]; 
+
+    if (data.acao === "atualizar_status") {
+      sheet.getRange(data.id_linha, 15 + parseInt(data.mes_index)).setValue(data.novo_status);
+    } 
+    else if (data.acao === "cadastrar") {
+      var novaLinha = [
+        new Date(), // Coluna A (Data/Hora - Usada para Novos Mantenedores)
+        data.nome || "", data.rg || "", data.cpf || "", data.endereco || "",
+        data.numero || "", data.bairro || "", data.cidade || "", data.cep || "",
+        data.telefone || "", data.email || "", data.valor || "", data.forma_pagamento || "", data.dia || "",
+        "A receber", "A receber", "A receber", "A receber", "A receber", "A receber",
+        "A receber", "A receber", "A receber", "A receber", "A receber", "A receber"
+      ];
+      sheet.appendRow(novaLinha);
+    }
+    else if (data.acao === "editar") {
+      var valoresAtualizados = [[
+        data.nome || "", data.rg || "", data.cpf || "", data.endereco || "",
+        data.numero || "", data.bairro || "", data.cidade || "", data.cep || "",
+        data.telefone || "", data.email || "", data.valor || "", data.forma_pagamento || "", data.dia || ""
+      ]];
+      sheet.getRange(data.id_linha, 2, 1, 13).setValues(valoresAtualizados);
+    }
+    else if (data.acao === "excluir") {
+      sheet.deleteRow(data.id_linha);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({"status": "sucesso"})).setMimeType(ContentService.MimeType.JSON);
+    
+  } catch (error) {
+    // Se o banco ficar ocupado por mais de 10s
+    return ContentService.createTextOutput(JSON.stringify({"status": "ocupado"})).setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    // Libera o banco de dados para a próxima pessoa da fila
+    lock.releaseLock();
+  }
+}
+
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  var rows = sheet.getDataRange().getValues();
+  var dados = [];
+  
+  for (var i = 1; i < rows.length; i++) { 
+    if (rows[i][1] !== "") { 
+      dados.push({
+        id_linha: i + 1,
+        data_cadastro: rows[i][0] ? new Date(rows[i][0]).toISOString() : null,
+        nome: rows[i][1], rg: rows[i][2], cpf: rows[i][3],
+        endereco: rows[i][4], numero: rows[i][5], bairro: rows[i][6], cidade: rows[i][7],
+        cep: rows[i][8], telefone: rows[i][9], email: rows[i][10],
+        valor: rows[i][11], forma_pagamento: rows[i][12], dia: rows[i][13],
+        pagamentos: [
+          rows[i][14] || "A receber", rows[i][15] || "A receber", rows[i][16] || "A receber", 
+          rows[i][17] || "A receber", rows[i][18] || "A receber", rows[i][19] || "A receber", 
+          rows[i][20] || "A receber", rows[i][21] || "A receber", rows[i][22] || "A receber", 
+          rows[i][23] || "A receber", rows[i][24] || "A receber", rows[i][25] || "A receber"
+        ]
+      });
+    }
+  }
+  return ContentService.createTextOutput(JSON.stringify(dados)).setMimeType(ContentService.MimeType.JSON);
+}

@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistema UNEC | Missões</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html, body { 
+            font-family: 'Inter', sans-serif; background-color: #f8fafc; 
+            overscroll-behavior-y: none; touch-action: pan-y; -webkit-user-select: none; user-select: none;
+        }
+        .overflow-y-auto { -webkit-overflow-scrolling: touch; overscroll-behavior-y: contain; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .menu-ativo { background-color: #2563eb; color: white; }
+        .menu-inativo { color: #cbd5e1; }
+        .menu-inativo:hover { background-color: #1e293b; color: white; }
+        .menu-mobile-ativo { color: #3b82f6; }
+        .menu-mobile-inativo { color: #94a3b8; }
+        
+        /* BLOQUEIO DE PROPAGANDA DO NETLIFY E OUTROS POPUPS AUTOMÁTICOS */
+        #netlify-badge, .netlify-badge, netlify-badge, div[style*="bottom: 0px"][style*="position: fixed"] {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            z-index: -9999 !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 overflow-hidden text-gray-800">
+
+    <!-- TELA DE LOGIN -->
+    <div id="tela-login" class="flex h-screen w-full items-center justify-center bg-slate-900 absolute z-[100] px-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
+            <div class="h-16 w-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-church"></i></div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-1">UNEC<span class="text-blue-600">System</span></h2>
+            <p class="text-sm text-gray-500 mb-8">Faça login para acessar o painel</p>
+            <form onsubmit="fazerLogin(event)" class="space-y-4">
+                <div class="relative"><i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-400"></i><input type="text" id="login-user" required placeholder="Usuário" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-left cursor-text"></div>
+                <div class="relative"><i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400"></i><input type="password" id="login-senha" required placeholder="Senha" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-left cursor-text"></div>
+                <p id="msg-erro" class="text-red-500 text-xs hidden text-left mt-1"><i class="fa-solid fa-circle-exclamation mr-1"></i> Usuário ou senha incorretos.</p>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-lg transition-colors mt-4 flex items-center justify-center">Entrar no Sistema</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- APP COMPLETO -->
+    <div id="app-container" class="hidden flex h-screen w-full overflow-hidden">
+        
+        <!-- MENU LATERAL (DESKTOP) -->
+        <aside class="w-64 bg-slate-900 text-white flex-col shadow-xl flex-shrink-0 z-20 hidden md:flex">
+            <div class="h-16 flex items-center px-6 border-b border-slate-700 bg-slate-950"><i class="fa-solid fa-church text-blue-400 text-xl mr-3"></i><h1 class="text-lg font-bold tracking-wider">UNEC<span class="text-blue-400">System</span></h1></div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <button onclick="mudarAba('relatorios')" id="btn-relatorios" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-ativo"><i class="fa-solid fa-chart-pie w-6 text-left"></i><span class="font-medium">Relatórios</span></button>
+                <button onclick="limparFormulario(); mudarAba('cadastro')" id="btn-cadastro" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-inativo"><i class="fa-solid fa-user-plus w-6 text-left"></i><span class="font-medium">Cadastrar</span></button>
+                <button onclick="mudarAba('consulta')" id="btn-consulta" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-inativo"><i class="fa-solid fa-magnifying-glass w-6 text-left"></i><span class="font-medium">Consulta</span></button>
+                <button onclick="mudarAba('faturar')" id="btn-faturar" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-inativo"><i class="fa-solid fa-file-invoice-dollar w-6 text-left"></i><span class="font-medium">Faturar</span></button>
+            </nav>
+            <div class="p-4 border-t border-slate-700 bg-slate-950"><div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="h-10 w-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">J</div><div><p class="text-sm font-medium">Jeovanne</p><p class="text-xs text-slate-400">Administrador</p></div></div><button onclick="sairSistema()" class="text-slate-400 hover:text-red-400 transition-colors" title="Sair"><i class="fa-solid fa-right-from-bracket"></i></button></div></div>
+        </aside>
+
+        <!-- ÁREA CENTRAL -->
+        <main class="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50 relative pb-16 md:pb-0">
+            <header class="bg-white shadow-sm h-16 flex items-center justify-between px-4 md:px-8 z-10 flex-shrink-0 relative">
+                <h2 class="text-lg md:text-xl font-semibold text-gray-800 truncate mr-2" id="titulo-pagina">Dashboard Gerencial</h2>
+                
+                <!-- FILTRO MÚLTIPLO DE MESES -->
+                <div class="relative">
+                    <div id="btn-filtro-mes" onclick="document.getElementById('dropdown-meses').classList.toggle('hidden')" class="flex items-center bg-gray-100 p-1 md:p-1.5 rounded-lg border border-gray-200 cursor-pointer shadow-sm hover:bg-gray-200 transition-colors">
+                        <i class="fa-regular fa-calendar-days text-gray-500 ml-1 md:ml-2 text-sm md:text-base"></i>
+                        <span id="lbl-filtro-meses" class="text-gray-800 font-bold pl-1.5 pr-2 md:pr-4 py-1 text-sm md:text-base">Ano Todo</span>
+                        <i class="fa-solid fa-chevron-down text-gray-500 text-xs pr-1"></i>
+                    </div>
+                    <div id="dropdown-meses" class="hidden absolute right-0 top-12 w-64 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 p-3">
+                        <div class="flex justify-between items-center mb-3 pb-2 border-b">
+                            <span class="font-bold text-sm text-gray-700">Filtrar Meses</span>
+                            <div class="space-x-2">
+                                <button type="button" onclick="toggleTodosMeses(true)" class="text-xs text-blue-600 font-bold hover:underline">Todos</button>
+                                <button type="button" onclick="toggleTodosMeses(false)" class="text-xs text-red-600 font-bold hover:underline">Nenhum</button>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 mb-3 max-h-48 overflow-y-auto" id="lista-checkboxes-meses"></div>
+                        <button onclick="aplicarFiltroMeses()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-lg text-sm transition-colors shadow flex items-center justify-center">
+                            <i class="fa-solid fa-check mr-2"></i> Aplicar Filtro
+                        </button>
+                    </div>
+                </div>
+                
+                <button onclick="sairSistema()" class="md:hidden ml-2 text-gray-400 hover:text-red-500"><i class="fa-solid fa-right-from-bracket text-xl"></i></button>
+            </header>
+
+            <div class="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center" id="loading-global">
+                <i class="fa-solid fa-circle-notch fa-spin text-5xl text-blue-600 mb-4"></i><p class="font-medium text-gray-600">Sincronizando com o Google...</p>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-4 pb-28 md:p-8 md:pb-8" style="touch-action: pan-y;" id="conteudo-principal" style="display: none;">
+                
+                <!-- TELA RELATÓRIOS -->
+                <section id="tela-relatorios" class="aba-conteudo block">
+                    <!-- INDICADORES 3x2 -->
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-green-100 text-green-500 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-dollar-sign"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Arrecadado <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-arrecadado">R$ 0,00</h3></div></div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-purple-100 text-purple-500 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-bullseye"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Previsto <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-previsto">R$ 0,00</h3></div></div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-red-100 text-red-500 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-chart-line flex-col-reverse"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Inadimplência <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-red-600" id="kpi-inadimplencia">0%</h3></div></div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-blue-50 text-blue-400 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-users"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Mantenedores</p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-mantenedores">0</h3></div></div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-teal-50 text-teal-500 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-user-plus"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Novos <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-novos">0</h3></div></div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-amber-50 text-amber-400 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-triangle-exclamation"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Atrasos <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-pendencias">0</h3></div></div>
+                    </div>
+                    
+                    <!-- GRÁFICOS -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 lg:col-span-2">
+                            <h3 class="text-lg md:text-xl font-medium text-gray-800 mb-1 tracking-wide">Previsão vs. Realizado</h3>
+                            <p class="text-xs text-gray-400 mb-4 italic">* Clique na barra do mês para isolá-lo no Dashboard.</p>
+                            <div class="h-64 md:h-80"><canvas id="barChart"></canvas></div>
+                        </div>
+                        <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100">
+                            <h3 class="text-md md:text-lg font-medium text-gray-800 mb-4 md:mb-6">Formas de Pagamento</h3>
+                            <div class="h-64 md:h-80 flex justify-center items-center relative"><canvas id="doughnutChart"></canvas></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TELA CADASTRO / EDIÇÃO -->
+                <section id="tela-cadastro" class="aba-conteudo hidden">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-4xl">
+                        <div class="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50"><h3 id="titulo-form-cadastro" class="font-semibold text-gray-800 text-sm md:text-base"><i class="fa-solid fa-address-card mr-2 text-blue-600"></i>Cadastro Manual</h3></div>
+                        <form onsubmit="salvarCadastro(event)" class="p-4 md:p-6">
+                            <input type="hidden" id="c-id-linha" value="">
+                            <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">1. Dados Pessoais</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><div class="md:col-span-2"><input type="text" id="c-nome" required placeholder="Nome Completo" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-rg" placeholder="RG" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-cpf" placeholder="CPF / CNPJ" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-tel" placeholder="Telefone / WhatsApp" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="email" id="c-email" placeholder="E-mail" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div></div>
+                            <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">2. Endereço</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"><div class="md:col-span-2"><input type="text" id="c-end" placeholder="Rua, Av" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-num" placeholder="Número" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-cep" placeholder="CEP" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div class="md:col-span-2"><input type="text" id="c-bairro" placeholder="Bairro" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div class="md:col-span-2"><input type="text" id="c-cidade" placeholder="Cidade" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div></div>
+                            <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">3. Financeiro</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><div><input type="text" id="c-valor" required placeholder="Valor Mensal (Ex: 50,00)" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><select id="c-dia" class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer"><option value="05">Dia 05</option><option value="10">Dia 10</option><option value="15">Dia 15</option><option value="20">Dia 20</option></select></div><div><select id="c-forma" class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer"><option value="Pix">Pix</option><option value="Cartão de Crédito">Cartão de Crédito</option><option value="Boleto Bancário">Boleto Bancário</option><option value="Depósito/Transf">Depósito/Transf</option></select></div></div>
+                            <div class="border-t pt-4"><button type="submit" id="btn-cad" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 md:py-2 px-6 rounded-lg shadow float-right"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Salvar na Planilha</button></div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- TELA CONSULTA -->
+                <section id="tela-consulta" class="aba-conteudo hidden">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center"><h3 class="font-semibold text-gray-800 text-sm md:text-base"><i class="fa-solid fa-list mr-2 text-blue-600"></i>Banco de Dados</h3><button onclick="carregarDados(true)" class="text-xs md:text-sm bg-white border hover:bg-gray-50 px-2 py-1.5 rounded transition-colors"><i class="fa-solid fa-rotate"></i> <span class="hidden md:inline">Atualizar DB</span></button></div>
+                        <div class="px-4 md:px-6 py-4 bg-white border-b border-gray-100 flex flex-col md:flex-row gap-3 md:items-center justify-between">
+                            <div class="flex space-x-2 w-full md:w-1/2"><div class="relative flex-1"><i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i><input type="text" id="busca-consulta" onkeyup="filtrarConsulta()" placeholder="Buscar nome..." class="w-full pl-10 pr-2 py-2 border rounded-lg outline-none text-sm cursor-text"></div><select id="filtro-status" onchange="filtrarConsulta()" class="border rounded-lg p-2 text-sm outline-none bg-white cursor-pointer"><option value="">Todos</option><option value="pago">Pago</option><option value="a receber">A receber</option></select></div>
+                            <div class="flex space-x-2 w-full md:w-auto mt-2 md:mt-0"><button onclick="exportarExcel()" class="flex-1 md:flex-none bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar Excel"><i class="fa-solid fa-file-excel md:mr-2"></i><span class="hidden md:inline">Excel</span></button><button onclick="exportarPDF()" class="flex-1 md:flex-none bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar PDF"><i class="fa-solid fa-file-pdf md:mr-2"></i><span class="hidden md:inline">PDF</span></button><button onclick="exportarCSV()" class="flex-1 md:flex-none bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar CSV"><i class="fa-solid fa-file-csv md:mr-2"></i><span class="hidden md:inline">CSV</span></button></div>
+                        </div>
+                        <div class="p-8 text-center text-gray-500" id="loading-tabela"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-2 text-blue-500"></i><p>Buscando...</p></div>
+                        <div class="overflow-x-auto hidden" id="tabela-container">
+                            <table class="w-full text-left border-collapse min-w-[700px]">
+                                <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                                    <tr><th class="px-4 md:px-6 py-3 font-semibold">Nome</th><th class="px-4 md:px-6 py-3 font-semibold">Contato</th><th class="px-4 md:px-6 py-3 font-semibold">Financeiro</th><th class="px-4 md:px-6 py-3 font-semibold">Status <span class="lbl-mes-atual"></span></th><th class="px-4 md:px-6 py-3 font-semibold text-center">Ações</th></tr>
+                                </thead>
+                                <tbody id="tabela-body" class="text-sm divide-y divide-gray-100 bg-white"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- TELA FATURAR -->
+                <section id="tela-faturar" class="aba-conteudo hidden">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-4xl">
+                        <div class="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50"><h3 class="font-semibold text-gray-800 text-sm md:text-base"><i class="fa-solid fa-file-invoice-dollar mr-2 text-blue-600"></i>Baixas de Pagamentos</h3></div>
+                        <div class="p-4 md:p-6 bg-gray-50 border-b border-gray-100"><input type="text" id="busca-faturar" onkeyup="filtrarFaturas()" placeholder="Buscar mantenedor..." class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none cursor-text"></div>
+                        <div class="p-4 md:p-6 pb-20 md:pb-6 overflow-y-auto"><div id="lista-faturar" class="space-y-3"></div></div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- MENU INFERIOR MOBILE -->
+        <nav class="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center h-16 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
+            <button onclick="mudarAba('relatorios')" id="btn-mobile-relatorios" class="flex flex-col items-center justify-center w-full h-full menu-mobile-ativo"><i class="fa-solid fa-chart-pie text-xl mb-1"></i><span class="text-[10px] font-medium">Relatórios</span></button>
+            <button onclick="limparFormulario(); mudarAba('cadastro')" id="btn-mobile-cadastro" class="flex flex-col items-center justify-center w-full h-full menu-mobile-inativo"><i class="fa-solid fa-user-plus text-xl mb-1"></i><span class="text-[10px] font-medium">Cadastrar</span></button>
+            <button onclick="mudarAba('consulta')" id="btn-mobile-consulta" class="flex flex-col items-center justify-center w-full h-full menu-mobile-inativo"><i class="fa-solid fa-list text-xl mb-1"></i><span class="text-[10px] font-medium">Consulta</span></button>
+            <button onclick="mudarAba('faturar')" id="btn-mobile-faturar" class="flex flex-col items-center justify-center w-full h-full menu-mobile-inativo"><i class="fa-solid fa-file-invoice-dollar text-xl mb-1"></i><span class="text-[10px] font-medium">Faturar</span></button>
+        </nav>
+    </div>
+
+    <script>
+        let startY = 0;
+        document.addEventListener('touchstart', e => { startY = e.touches[0].pageY; }, {passive: true});
+        document.addEventListener('touchmove', e => {
+            let y = e.touches[0].pageY; let scrollavel = e.target.closest('.overflow-y-auto');
+            if (!scrollavel) { e.preventDefault(); } else { if (scrollavel.scrollTop <= 0 && y > startY) { e.preventDefault(); } }
+        }, {passive: false});
+
+        Chart.register(ChartDataLabels);
+
+        const API_URL = "https://script.google.com/macros/s/AKfycbwQcrPuuTrcYvoJDp4kid5QdDRmkP-PuxXaNKn6oFt7gkyLZE_vy5Z-DSJhPQIqzWX1/exec"; 
+
+        let dadosGlobais = [];
+        let chartRosca = null; let chartBarras = null;
+        const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        let mesesSelecionados = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; 
+
+        window.onload = function() {
+            initFiltroMeses();
+            const logado = localStorage.getItem('unec_logado');
+            if (logado === 'sim') {
+                document.getElementById('tela-login').style.display = 'none';
+                document.getElementById('app-container').classList.remove('hidden');
+                
+                // SISTEMA DE CACHE AO ABRIR O APP
+                const cache = localStorage.getItem('unec_dados_cache');
+                if (cache) {
+                    dadosGlobais = JSON.parse(cache);
+                    renderizarInterface();
+                } else {
+                    carregarDados();
+                }
+            }
+        };
+
+        function initFiltroMeses() {
+            const container = document.getElementById('lista-checkboxes-meses');
+            container.innerHTML = '';
+            nomesMeses.forEach((mes, index) => {
+                container.innerHTML += `<label class="flex items-center space-x-2 p-1 bg-gray-50 rounded border cursor-pointer hover:bg-gray-100"><input type="checkbox" class="chk-mes w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" value="${index}" checked><span class="text-sm font-medium text-gray-700">${mes}</span></label>`;
+            });
+        }
+
+        function toggleTodosMeses(selecionar) { document.querySelectorAll('.chk-mes').forEach(chk => chk.checked = selecionar); }
+        
+        function aplicarFiltroMeses() {
+            let selecionados = [];
+            document.querySelectorAll('.chk-mes:checked').forEach(chk => selecionados.push(parseInt(chk.value)));
+            if(selecionados.length === 0) { alert("Selecione pelo menos um mês!"); return; }
+            mesesSelecionados = selecionados.sort((a,b) => a - b);
+            document.getElementById('dropdown-meses').classList.add('hidden');
+            renderizarInterface();
+        }
+
+        function forcarFiltroUnico(mesIndex) {
+            mesesSelecionados = [mesIndex];
+            document.querySelectorAll('.chk-mes').forEach(chk => { chk.checked = (parseInt(chk.value) === mesIndex); });
+            renderizarInterface();
+        }
+
+        // NOVO LOGIN (Protegido e integrado com a API)
+        async function fazerLogin(event) { 
+            event.preventDefault(); 
+            const user = document.getElementById('login-user').value; 
+            const pass = document.getElementById('login-senha').value; 
+            const btn = event.target.querySelector('button');
+            
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Verificando...';
+            btn.disabled = true;
+            document.getElementById('msg-erro').classList.add('hidden');
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ acao: "login", usuario: user, senha: pass })
+                });
+                const resultado = await response.json();
+
+                if (resultado.status === "sucesso") {
+                    localStorage.setItem('unec_logado', 'sim'); 
+                    document.getElementById('tela-login').style.display = 'none'; 
+                    document.getElementById('app-container').classList.remove('hidden'); 
+                    carregarDados(); 
+                } else {
+                    document.getElementById('msg-erro').classList.remove('hidden');
+                }
+            } catch (e) {
+                alert("Erro ao conectar no servidor. Verifique a internet.");
+            }
+            
+            btn.innerHTML = 'Entrar no Sistema';
+            btn.disabled = false;
+        }
+
+        function sairSistema() { localStorage.removeItem('unec_logado'); localStorage.removeItem('unec_dados_cache'); document.getElementById('app-container').classList.add('hidden'); document.getElementById('tela-login').style.display = 'flex'; document.getElementById('login-senha').value = ''; document.getElementById('msg-erro').classList.add('hidden'); }
+
+        function mudarAba(abaId) {
+            document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.add('hidden', 'block'));
+            document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.remove('block'));
+            document.getElementById('tela-' + abaId).classList.remove('hidden'); document.getElementById('tela-' + abaId).classList.add('block');
+            const botoes = ['relatorios', 'cadastro', 'consulta', 'faturar'];
+            botoes.forEach(btn => { document.getElementById('btn-' + btn).classList.replace('menu-ativo', 'menu-inativo'); document.getElementById('btn-mobile-' + btn).classList.replace('menu-mobile-ativo', 'menu-mobile-inativo'); });
+            document.getElementById('btn-' + abaId).classList.replace('menu-inativo', 'menu-ativo'); document.getElementById('btn-mobile-' + abaId).classList.replace('menu-mobile-inativo', 'menu-mobile-ativo');
+            const titulos = {'relatorios': 'Dashboard Gerencial', 'cadastro': 'Cadastrar', 'consulta': 'Banco de Dados', 'faturar': 'Baixas de Faturas'};
+            document.getElementById('titulo-pagina').innerText = titulos[abaId];
+        }
+
+        function formatarMoeda(valor) { let num = parseFloat(String(valor).replace(/[R$\s]/g, '').replace(',', '.')); return isNaN(num) ? "0,00" : num.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
+        function extrairNumero(valor) { let num = parseFloat(String(valor).replace(/[^\d,-]/g, '').replace(',', '.')); return isNaN(num) ? 0 : num; }
+
+        // BUSCA ATUALIZADA (Gravando no Cache)
+        async function carregarDados(forcarAtualizacao = false) {
+            if (forcarAtualizacao) document.getElementById('loading-global').style.display = 'flex'; 
+            document.getElementById('conteudo-principal').style.display = 'none';
+            try { 
+                const response = await fetch(API_URL); 
+                dadosGlobais = await response.json(); 
+                
+                // Grava a resposta na memória do aparelho
+                localStorage.setItem('unec_dados_cache', JSON.stringify(dadosGlobais));
+                
+                renderizarInterface(); 
+                document.getElementById('loading-global').style.display = 'none'; 
+                document.getElementById('conteudo-principal').style.display = 'block'; 
+            } catch (error) { 
+                alert("Erro ao conectar ao Google. Usando dados da memória se houver."); 
+                document.getElementById('loading-global').style.display = 'none';
+                document.getElementById('conteudo-principal').style.display = 'block'; 
+            }
+        }
+
+        function renderizarInterface() {
+            let lblFiltro = ""; let lblSpan = "";
+            if (mesesSelecionados.length === 12) { lblFiltro = "Ano Todo"; lblSpan = "(Ano Todo)"; } 
+            else if (mesesSelecionados.length === 1) { lblFiltro = nomesMeses[mesesSelecionados[0]]; lblSpan = `(${lblFiltro})`; } 
+            else { lblFiltro = `${mesesSelecionados.length} Meses`; lblSpan = `(${mesesSelecionados.length} Meses)`; }
+            
+            document.getElementById('lbl-filtro-meses').innerText = lblFiltro;
+            document.querySelectorAll('.lbl-mes-atual').forEach(el => el.innerText = lblSpan);
+
+            let valorPagoGeral = 0; let valorPendenteGeral = 0; 
+            let qtdPagosGeral = 0; let qtdPendentesGeral = 0;
+            let novosMantenedores = 0;
+            let contagemFormasPgto = {};
+
+            let labelsGrafico = []; let arrayRealizadoGrafico = []; let arrayPrevisaoGrafico = [];
+            mesesSelecionados.forEach(mesIndex => { labelsGrafico.push(nomesMeses[mesIndex]); arrayRealizadoGrafico.push(0); arrayPrevisaoGrafico.push(0); });
+
+            const tbody = document.getElementById('tabela-body'); const listaFaturar = document.getElementById('lista-faturar');
+            tbody.innerHTML = ''; listaFaturar.innerHTML = '';
+
+            const anoAtual = new Date().getFullYear();
+
+            dadosGlobais.forEach(item => {
+                let valorReais = extrairNumero(item.valor); 
+                let parcelasPagasNoFiltro = 0;
+
+                if (item.data_cadastro) {
+                    let dataCad = new Date(item.data_cadastro);
+                    if (!isNaN(dataCad.getTime()) && dataCad.getFullYear() === anoAtual) {
+                        if (mesesSelecionados.includes(dataCad.getMonth())) { novosMantenedores++; }
+                    }
+                }
+
+                let forma = item.forma_pagamento || "Não informada";
+                if(forma.trim() === "") forma = "Não informada";
+                contagemFormasPgto[forma] = (contagemFormasPgto[forma] || 0) + 1;
+
+                mesesSelecionados.forEach((mesIndex, pos) => {
+                    let st = item.pagamentos[mesIndex] ? item.pagamentos[mesIndex].toLowerCase() : "a receber";
+                    arrayPrevisaoGrafico[pos] += valorReais;
+                    if(st === "pago") {
+                        arrayRealizadoGrafico[pos] += valorReais; 
+                        parcelasPagasNoFiltro++; valorPagoGeral += valorReais; qtdPagosGeral++;
+                    } else {
+                        valorPendenteGeral += valorReais; qtdPendentesGeral++;
+                    }
+                });
+
+                let contHTML = `<span class="text-sm font-medium">${item.telefone || '-'}</span><br><span class="text-xs text-gray-400 break-all">${item.email || '-'}</span>`;
+                let finHTML = `<span class="font-bold text-blue-600">R$ ${formatarMoeda(item.valor)}</span><br><span class="text-xs text-gray-400">Venc: Dia ${item.dia || '-'}</span>`;
+                let botoesAcao = `<div class="flex justify-center space-x-3"><button onclick="prepararEdicao(${item.id_linha})" class="text-blue-500 hover:text-blue-700 bg-blue-50 p-2 rounded-lg transition" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="excluirCadastro(${item.id_linha})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded-lg transition" title="Excluir"><i class="fa-solid fa-trash"></i></button></div>`;
+
+                if (mesesSelecionados.length > 1) {
+                    let totalNoFiltro = mesesSelecionados.length;
+                    let corStatus = parcelasPagasNoFiltro === totalNoFiltro ? "bg-green-100 text-green-800" : (parcelasPagasNoFiltro > 0 ? "bg-blue-100 text-blue-800" : "bg-amber-100 text-amber-800");
+                    let statusTxt = `${parcelasPagasNoFiltro}/${totalNoFiltro} Pagos`;
+                    tbody.innerHTML += `<tr class="border-b border-gray-100 hover:bg-gray-50 transition" data-status="${statusTxt.toLowerCase()}" data-busca="${item.nome} ${item.cpf} ${item.telefone}"><td class="px-4 md:px-6 py-4 font-medium text-gray-800">${item.nome}</td><td class="px-4 md:px-6 py-4 text-gray-600 leading-tight">${contHTML}</td><td class="px-4 md:px-6 py-4">${finHTML}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${corStatus}">${statusTxt}</span></td><td class="px-4 md:px-6 py-4">${botoesAcao}</td></tr>`;
+                    listaFaturar.innerHTML += `<div class="border border-gray-200 bg-gray-50 rounded-lg p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between" data-nome="${item.nome.toLowerCase()}"><div><p class="font-bold text-gray-800">${item.nome}</p><p class="text-xs text-gray-500 text-red-500">Selecione apenas 1 mês no filtro acima para dar baixa.</p></div><button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded font-medium shadow-sm w-full md:w-auto"><i class="fa-solid fa-lock mr-1"></i> Bloqueado</button></div>`;
+                } else {
+                    let mesUnico = mesesSelecionados[0];
+                    let status = item.pagamentos[mesUnico] ? String(item.pagamentos[mesUnico]).trim() : "A receber";
+                    let isPago = status.toLowerCase() === "pago";
+                    let corStatus = isPago ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"; if (status.toLowerCase().includes('atrasado')) corStatus = "bg-red-100 text-red-800";
+                    tbody.innerHTML += `<tr class="border-b border-gray-100 hover:bg-gray-50 transition" data-status="${status.toLowerCase()}" data-busca="${item.nome} ${item.cpf} ${item.telefone}"><td class="px-4 md:px-6 py-4 font-medium text-gray-800">${item.nome}</td><td class="px-4 md:px-6 py-4 text-gray-600 leading-tight">${contHTML}</td><td class="px-4 md:px-6 py-4">${finHTML}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${corStatus}">${status}</span></td><td class="px-4 md:px-6 py-4">${botoesAcao}</td></tr>`;
+                    let btnFaturar = isPago ? `<button disabled class="bg-gray-200 text-gray-500 px-4 py-2 rounded font-medium w-full md:w-auto"><i class="fa-solid fa-check mr-1"></i> Já Pago</button>` : `<button onclick="registrarPagamento(${item.id_linha})" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow w-full md:w-auto"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Receber (${nomesMeses[mesUnico]})</button>`;
+                    listaFaturar.innerHTML += `<div class="fatura-item border ${isPago ? 'border-gray-200 bg-gray-50' : 'border-blue-100 bg-white shadow-sm'} rounded-lg p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between" data-nome="${item.nome.toLowerCase()}"><div><p class="font-bold ${isPago ? 'text-gray-500 line-through' : 'text-gray-800'}">${item.nome}</p><p class="text-xs text-gray-500">R$ ${formatarMoeda(item.valor)} | Dia ${item.dia || '-'}</p></div><div>${btnFaturar}</div></div>`;
+                }
+            });
+
+            document.getElementById('kpi-arrecadado').innerText = "R$ " + valorPagoGeral.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            document.getElementById('kpi-previsto').innerText = "R$ " + (valorPagoGeral + valorPendenteGeral).toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+            document.getElementById('kpi-mantenedores').innerText = dadosGlobais.length;
+            document.getElementById('kpi-pendencias').innerText = qtdPendentesGeral;
+            document.getElementById('kpi-novos').innerText = novosMantenedores;
+            
+            let totalArrecadacao = valorPagoGeral + valorPendenteGeral;
+            let taxaInadimplencia = totalArrecadacao > 0 ? ((valorPendenteGeral / totalArrecadacao) * 100).toFixed(1) : "0.0";
+            document.getElementById('kpi-inadimplencia').innerText = taxaInadimplencia.replace('.', ',') + "%";
+            
+            desenharGraficoBarras(labelsGrafico, arrayPrevisaoGrafico, arrayRealizadoGrafico); 
+            desenharGraficoRosca(contagemFormasPgto);
+            
+            document.getElementById('loading-tabela').style.display = 'none'; document.getElementById('tabela-container').classList.remove('hidden');
+        }
+
+        function desenharGraficoBarras(labels, dadosPrevisao, dadosRealizado) {
+            const ctxBar = document.getElementById('barChart').getContext('2d'); if(chartBarras) chartBarras.destroy();
+            chartBarras = new Chart(ctxBar, { type: 'bar', data: { labels: labels, datasets: [{ label: 'Previsão (R$)', data: dadosPrevisao, backgroundColor: '#cbd5e1', barPercentage: 0.6, borderRadius: 4 }, { label: 'Realizado (R$)', data: dadosRealizado, backgroundColor: '#3b82f6', barPercentage: 0.6, borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25 } }, plugins: { legend: { position: 'bottom' }, datalabels: { color: '#475569', anchor: 'end', align: 'top', offset: -2, font: { size: 9, weight: 'bold' }, formatter: (value) => { return value > 0 ? value.toLocaleString('pt-BR') : ''; } } }, scales: { y: { display: false, beginAtZero: true }, x: { grid: { display: false, drawBorder: false }, ticks: { font: { size: 11, weight: '500' }, color: '#64748b' } } }, onClick: (event, elements) => { if (elements.length > 0) { let idxClicado = elements[0].index; let mesRealClicado = mesesSelecionados[idxClicado]; forcarFiltroUnico(mesRealClicado); } } } });
+        }
+
+        function desenharGraficoRosca(contagemPgto) {
+            const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d'); if(chartRosca) chartRosca.destroy();
+            let labelsPgto = Object.keys(contagemPgto); let valoresPgto = Object.values(contagemPgto); let paletaCores = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'];
+            chartRosca = new Chart(ctxDoughnut, { type: 'doughnut', data: { labels: labelsPgto, datasets: [{ data: valoresPgto, backgroundColor: paletaCores.slice(0, labelsPgto.length), borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }, datalabels: { color: '#ffffff', font: { size: 14, weight: 'bold' }, formatter: (value) => { return value > 0 ? value : ''; } } } } });
+        }
+
+        async function registrarPagamento(idLinha) { let mesUnico = mesesSelecionados[0]; if(!confirm(`Confirmar o pagamento de ${nomesMeses[mesUnico]}?`)) return; try { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ acao: "atualizar_status", id_linha: idLinha, mes_index: mesUnico, novo_status: "Pago" }) }); alert("Sucesso!"); carregarDados(true); } catch (e) { alert("Erro ao atualizar."); } }
+        function filtrarConsulta() { const t = document.getElementById('busca-consulta').value.toLowerCase(); const s = document.getElementById('filtro-status').value.toLowerCase(); document.querySelectorAll('#tabela-body tr').forEach(linha => { const buscaValida = linha.getAttribute('data-busca').toLowerCase().includes(t); const statusValido = (s === "" || linha.getAttribute('data-status').includes(s)); linha.style.display = (buscaValida && statusValido) ? '' : 'none'; }); }
+        function filtrarFaturas() { let t = document.getElementById('busca-faturar').value.toLowerCase(); document.querySelectorAll('.fatura-item').forEach(item => { item.style.display = item.getAttribute('data-nome').includes(t) ? 'flex' : 'none'; }); }
+        function prepararDadosExportacao() { let cabecalho = ["Nome", "RG", "CPF", "Endereço", "Número", "Bairro", "Cidade", "CEP", "Telefone", "E-mail", "Valor", "Forma Pagamento", "Dia Venc", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]; let linhas = [cabecalho]; dadosGlobais.forEach(item => { let linha = [ item.nome || '', item.rg || '', item.cpf || '', item.endereco || '', item.numero || '', item.bairro || '', item.cidade || '', item.cep || '', item.telefone || '', item.email || '', formatarMoeda(item.valor), item.forma_pagamento || '', item.dia || '' ]; item.pagamentos.forEach(st => linha.push(st)); linhas.push(linha); }); return linhas; }
+        function exportarExcel() { const dados = prepararDadosExportacao(); const ws = XLSX.utils.aoa_to_sheet(dados); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Mantenedores"); XLSX.writeFile(wb, "Banco_Dados_UNEC.xlsx"); }
+        function exportarPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); const dados = prepararDadosExportacao(); doc.setFontSize(14); doc.text("Relatório Geral - UNEC System", 14, 15); doc.autoTable({ head: [dados[0]], body: dados.slice(1), startY: 20, styles: { fontSize: 5, cellPadding: 1 }, headStyles: { fillColor: [37, 99, 235] }, theme: 'striped' }); doc.save("Relatorio_UNEC.pdf"); }
+        function exportarCSV() { const dados = prepararDadosExportacao(); let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; dados.forEach(row => { let rowStr = row.map(cell => `"${cell}"`).join(";"); csvContent += rowStr + "\n"; }); const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Banco_Dados_UNEC.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+
+        function limparFormulario() { document.querySelector('form').reset(); document.getElementById('c-id-linha').value = ""; document.getElementById('titulo-form-cadastro').innerHTML = '<i class="fa-solid fa-address-card mr-2 text-blue-600"></i>Cadastro Manual'; document.getElementById('btn-cad').innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> Salvar na Planilha'; }
+        function prepararEdicao(id) { const pessoa = dadosGlobais.find(d => d.id_linha === id); if(!pessoa) return; document.getElementById('c-id-linha').value = pessoa.id_linha; document.getElementById('c-nome').value = pessoa.nome || ''; document.getElementById('c-rg').value = pessoa.rg || ''; document.getElementById('c-cpf').value = pessoa.cpf || ''; document.getElementById('c-tel').value = pessoa.telefone || ''; document.getElementById('c-email').value = pessoa.email || ''; document.getElementById('c-end').value = pessoa.endereco || ''; document.getElementById('c-num').value = pessoa.numero || ''; document.getElementById('c-cep').value = pessoa.cep || ''; document.getElementById('c-bairro').value = pessoa.bairro || ''; document.getElementById('c-cidade').value = pessoa.cidade || ''; document.getElementById('c-valor').value = pessoa.valor || ''; if(pessoa.dia) document.getElementById('c-dia').value = String(pessoa.dia).padStart(2, '0'); if(pessoa.forma_pagamento) document.getElementById('c-forma').value = pessoa.forma_pagamento; document.getElementById('titulo-form-cadastro').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2 text-blue-600"></i>Editar Cadastro: ' + pessoa.nome; document.getElementById('btn-cad').innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Alterações'; mudarAba('cadastro'); }
+        async function excluirCadastro(id) { if(!confirm("Deseja EXCLUIR este cadastro?")) return; document.getElementById('loading-global').style.display = 'flex'; try { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ acao: "excluir", id_linha: id }) }); alert("Excluído com sucesso!"); carregarDados(true); } catch (e) { alert("Erro ao excluir."); document.getElementById('loading-global').style.display = 'none'; } }
+        
+        async function salvarCadastro(event) {
+            event.preventDefault(); const btn = document.getElementById('btn-cad'); const idLinha = document.getElementById('c-id-linha').value; const acaoDefinida = idLinha ? "editar" : "cadastrar"; btn.innerHTML = "Processando..."; btn.disabled = true;
+            const novoDado = { acao: acaoDefinida, id_linha: idLinha, nome: document.getElementById('c-nome').value, rg: document.getElementById('c-rg').value, cpf: document.getElementById('c-cpf').value, telefone: document.getElementById('c-tel').value, email: document.getElementById('c-email').value, endereco: document.getElementById('c-end').value, numero: document.getElementById('c-num').value, cep: document.getElementById('c-cep').value, bairro: document.getElementById('c-bairro').value, cidade: document.getElementById('c-cidade').value, valor: document.getElementById('c-valor').value, dia: document.getElementById('c-dia').value, forma_pagamento: document.getElementById('c-forma').value };
+            try { 
+                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(novoDado) }); 
+                const result = await response.json();
+                
+                if (result.status === "ocupado") {
+                    alert("O servidor está ocupado. Outra pessoa pode estar salvando. Tente novamente em instantes.");
+                } else {
+                    alert(acaoDefinida === "editar" ? "Atualizado com sucesso!" : "Salvo com sucesso!"); 
+                    limparFormulario(); 
+                    carregarDados(true); 
+                    mudarAba('consulta');
+                }
+            } catch (error) { 
+                alert("Erro ao salvar."); 
+            } 
+            btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up mr-2'></i> Salvar na Planilha"; btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
