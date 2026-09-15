@@ -29,7 +29,6 @@
         .menu-mobile-ativo { color: #3b82f6; }
         .menu-mobile-inativo { color: #94a3b8; }
         
-        /* BLOQUEIO DE PROPAGANDA DO NETLIFY E OUTROS POPUPS AUTOMÁTICOS */
         #netlify-badge, .netlify-badge, netlify-badge, div[style*="bottom: 0px"][style*="position: fixed"] {
             display: none !important;
             opacity: 0 !important;
@@ -120,7 +119,6 @@
                 
                 <!-- TELA RELATÓRIOS -->
                 <section id="tela-relatorios" class="aba-conteudo block">
-                    <!-- INDICADORES 3x2 -->
                     <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
                         <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-green-100 text-green-500 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-dollar-sign"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Arrecadado <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-arrecadado">R$ 0,00</h3></div></div>
                         <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-purple-100 text-purple-500 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-bullseye"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Previsto <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-previsto">R$ 0,00</h3></div></div>
@@ -130,7 +128,6 @@
                         <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 flex items-center space-x-3 md:space-x-4"><div class="h-10 w-10 md:h-12 md:w-12 bg-amber-50 text-amber-400 rounded-lg flex items-center justify-center text-xl md:text-2xl"><i class="fa-solid fa-triangle-exclamation"></i></div><div><p class="text-[10px] md:text-xs text-gray-500 font-medium mb-1 uppercase tracking-wider">Atrasos <span class="lbl-mes-atual text-[9px] md:text-[10px] lowercase font-bold"></span></p><h3 class="text-lg md:text-2xl font-bold text-gray-800" id="kpi-pendencias">0</h3></div></div>
                     </div>
                     
-                    <!-- GRÁFICOS -->
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
                         <div class="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 lg:col-span-2">
                             <h3 class="text-lg md:text-xl font-medium text-gray-800 mb-1 tracking-wide">Previsão vs. Realizado</h3>
@@ -152,11 +149,52 @@
                             <input type="hidden" id="c-id-linha" value="">
                             <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">1. Dados Pessoais</h4>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><div class="md:col-span-2"><input type="text" id="c-nome" required placeholder="Nome Completo" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-rg" placeholder="RG" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-cpf" placeholder="CPF / CNPJ" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-tel" placeholder="Telefone / WhatsApp" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="email" id="c-email" placeholder="E-mail" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div></div>
+                            
                             <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">2. Endereço</h4>
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6"><div class="md:col-span-2"><input type="text" id="c-end" placeholder="Rua, Av" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-num" placeholder="Número" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><input type="text" id="c-cep" placeholder="CEP" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div class="md:col-span-2"><input type="text" id="c-bairro" placeholder="Bairro" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div class="md:col-span-2"><input type="text" id="c-cidade" placeholder="Cidade" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div></div>
-                            <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">3. Financeiro</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"><div><input type="text" id="c-valor" required placeholder="Valor Mensal (Ex: 50,00)" class="w-full border rounded-lg p-3 outline-none focus:ring-2 focus:ring-blue-500 cursor-text"></div><div><select id="c-dia" class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer"><option value="05">Dia 05</option><option value="10">Dia 10</option><option value="15">Dia 15</option><option value="20">Dia 20</option></select></div><div><select id="c-forma" class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer"><option value="Pix">Pix</option><option value="Cartão de Crédito">Cartão de Crédito</option><option value="Boleto Bancário">Boleto Bancário</option><option value="Depósito/Transf">Depósito/Transf</option></select></div></div>
-                            <div class="border-t pt-4"><button type="submit" id="btn-cad" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 md:py-2 px-6 rounded-lg shadow float-right"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Salvar na Planilha</button></div>
+                            
+                            <h4 class="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider mb-4 border-b pb-2">3. Financeiro & Situação</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Valor Mensal</label>
+                                    <select id="c-valor" required class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer focus:ring-2 focus:ring-blue-500">
+                                        <option value="" disabled selected>Selecione o valor...</option>
+                                        <option value="20,00">R$ 20,00</option>
+                                        <option value="30,00">R$ 30,00</option>
+                                        <option value="50,00">R$ 50,00</option>
+                                        <option value="100,00">R$ 100,00</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Melhor Dia</label>
+                                    <select id="c-dia" class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer focus:ring-2 focus:ring-blue-500">
+                                        <option value="05">Dia 05</option>
+                                        <option value="10">Dia 10</option>
+                                        <option value="15">Dia 15</option>
+                                        <option value="20">Dia 20</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Forma de Pgto</label>
+                                    <select id="c-forma" class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer focus:ring-2 focus:ring-blue-500">
+                                        <option value="Pix">Pix</option>
+                                        <option value="Cartão de Crédito">Cartão de Crédito</option>
+                                        <option value="Boleto Bancário">Boleto Bancário</option>
+                                        <option value="Depósito/Transf">Depósito/Transf</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-gray-500 mb-1">Status de Cadastro</label>
+                                    <select id="c-status" class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer focus:ring-2 focus:ring-blue-500">
+                                        <option value="Ativo">Ativo</option>
+                                        <option value="Inativo">Inativo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-4">
+                                <button type="submit" id="btn-cad" class="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 md:py-2 px-6 rounded-lg shadow float-right"><i class="fa-solid fa-cloud-arrow-up mr-2"></i> Salvar na Planilha</button>
+                            </div>
                         </form>
                     </div>
                 </section>
@@ -164,16 +202,45 @@
                 <!-- TELA CONSULTA -->
                 <section id="tela-consulta" class="aba-conteudo hidden">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                        <div class="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center"><h3 class="font-semibold text-gray-800 text-sm md:text-base"><i class="fa-solid fa-list mr-2 text-blue-600"></i>Banco de Dados</h3><button onclick="carregarDados(true)" class="text-xs md:text-sm bg-white border hover:bg-gray-50 px-2 py-1.5 rounded transition-colors"><i class="fa-solid fa-rotate"></i> <span class="hidden md:inline">Atualizar DB</span></button></div>
+                        <div class="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-800 text-sm md:text-base"><i class="fa-solid fa-list mr-2 text-blue-600"></i>Banco de Dados</h3>
+                            <button onclick="carregarDados(true)" class="text-xs md:text-sm bg-white border hover:bg-gray-50 px-2 py-1.5 rounded transition-colors"><i class="fa-solid fa-rotate"></i> <span class="hidden md:inline">Atualizar DB</span></button>
+                        </div>
                         <div class="px-4 md:px-6 py-4 bg-white border-b border-gray-100 flex flex-col md:flex-row gap-3 md:items-center justify-between">
-                            <div class="flex space-x-2 w-full md:w-1/2"><div class="relative flex-1"><i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i><input type="text" id="busca-consulta" onkeyup="filtrarConsulta()" placeholder="Buscar nome..." class="w-full pl-10 pr-2 py-2 border rounded-lg outline-none text-sm cursor-text"></div><select id="filtro-status" onchange="filtrarConsulta()" class="border rounded-lg p-2 text-sm outline-none bg-white cursor-pointer"><option value="">Todos</option><option value="pago">Pago</option><option value="a receber">A receber</option></select></div>
-                            <div class="flex space-x-2 w-full md:w-auto mt-2 md:mt-0"><button onclick="exportarExcel()" class="flex-1 md:flex-none bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar Excel"><i class="fa-solid fa-file-excel md:mr-2"></i><span class="hidden md:inline">Excel</span></button><button onclick="exportarPDF()" class="flex-1 md:flex-none bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar PDF"><i class="fa-solid fa-file-pdf md:mr-2"></i><span class="hidden md:inline">PDF</span></button><button onclick="exportarCSV()" class="flex-1 md:flex-none bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar CSV"><i class="fa-solid fa-file-csv md:mr-2"></i><span class="hidden md:inline">CSV</span></button></div>
+                            <div class="flex space-x-2 w-full md:w-1/2">
+                                <div class="relative flex-1"><i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400"></i><input type="text" id="busca-consulta" onkeyup="filtrarConsulta()" placeholder="Buscar nome..." class="w-full pl-10 pr-2 py-2 border rounded-lg outline-none text-sm cursor-text"></div>
+                                <select id="filtro-status" onchange="filtrarConsulta()" class="border rounded-lg p-2 text-sm outline-none bg-white cursor-pointer font-medium">
+                                    <option value="">Todos</option>
+                                    <option value="pago">Pagamento: Pago</option>
+                                    <option value="a receber">Pagamento: A receber</option>
+                                    <option value="status:ativo">Status: Ativo</option>
+                                    <option value="status:inativo">Status: Inativo</option>
+                                </select>
+                            </div>
+                            <div class="flex space-x-2 w-full md:w-auto mt-2 md:mt-0">
+                                <button onclick="exportarExcel()" class="flex-1 md:flex-none bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar Excel"><i class="fa-solid fa-file-excel md:mr-2"></i><span class="hidden md:inline">Excel</span></button>
+                                <button onclick="exportarPDF()" class="flex-1 md:flex-none bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar PDF"><i class="fa-solid fa-file-pdf md:mr-2"></i><span class="hidden md:inline">PDF</span></button>
+                                <button onclick="exportarCSV()" class="flex-1 md:flex-none bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center justify-center" title="Baixar CSV"><i class="fa-solid fa-file-csv md:mr-2"></i><span class="hidden md:inline">CSV</span></button>
+                            </div>
                         </div>
                         <div class="p-8 text-center text-gray-500" id="loading-tabela"><i class="fa-solid fa-circle-notch fa-spin text-3xl mb-2 text-blue-500"></i><p>Buscando...</p></div>
                         <div class="overflow-x-auto hidden" id="tabela-container">
                             <table class="w-full text-left border-collapse min-w-[700px]">
                                 <thead class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                                    <tr><th class="px-4 md:px-6 py-3 font-semibold">Nome</th><th class="px-4 md:px-6 py-3 font-semibold">Contato</th><th class="px-4 md:px-6 py-3 font-semibold">Financeiro</th><th class="px-4 md:px-6 py-3 font-semibold">Status <span class="lbl-mes-atual"></span></th><th class="px-4 md:px-6 py-3 font-semibold text-center">Ações</th></tr>
+                                    <tr>
+                                        <th onclick="ordenarTabela('nome')" class="px-4 md:px-6 py-3 font-semibold cursor-pointer select-none hover:text-blue-600 transition-colors">
+                                            Nome <i id="sort-icon-nome" class="fa-solid fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 md:px-6 py-3 font-semibold">Contato</th>
+                                        <th onclick="ordenarTabela('valor')" class="px-4 md:px-6 py-3 font-semibold cursor-pointer select-none hover:text-blue-600 transition-colors">
+                                            Financeiro <i id="sort-icon-valor" class="fa-solid fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 md:px-6 py-3 font-semibold">Pagamentos <span class="lbl-mes-atual"></span></th>
+                                        <th onclick="ordenarTabela('status')" class="px-4 md:px-6 py-3 font-semibold cursor-pointer select-none hover:text-blue-600 transition-colors">
+                                            Status <i id="sort-icon-status" class="fa-solid fa-sort ml-1"></i>
+                                        </th>
+                                        <th class="px-4 md:px-6 py-3 font-semibold text-center">Ações</th>
+                                    </tr>
                                 </thead>
                                 <tbody id="tabela-body" class="text-sm divide-y divide-gray-100 bg-white"></tbody>
                             </table>
@@ -184,8 +251,25 @@
                 <!-- TELA FATURAR -->
                 <section id="tela-faturar" class="aba-conteudo hidden">
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden max-w-4xl">
-                        <div class="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50"><h3 class="font-semibold text-gray-800 text-sm md:text-base"><i class="fa-solid fa-file-invoice-dollar mr-2 text-blue-600"></i>Baixas de Pagamentos</h3></div>
-                        <div class="p-4 md:p-6 bg-gray-50 border-b border-gray-100"><input type="text" id="busca-faturar" onkeyup="filtrarFaturas()" placeholder="Buscar mantenedor..." class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none cursor-text"></div>
+                        <div class="px-4 md:px-6 py-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
+                            <h3 class="font-semibold text-gray-800 text-sm md:text-base"><i class="fa-solid fa-file-invoice-dollar mr-2 text-blue-600"></i>Baixas de Pagamentos</h3>
+                        </div>
+                        
+                        <div class="p-4 md:p-6 bg-gray-50 border-b border-gray-100 space-y-3">
+                            <input type="text" id="busca-faturar" onkeyup="filtrarFaturas()" placeholder="Buscar mantenedor..." class="w-full px-4 py-2 border border-gray-300 rounded-lg outline-none cursor-text">
+                            
+                            <!-- BARRA DE BAIXA EM LOTE -->
+                            <div id="barra-lote-container" class="hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-blue-50 border border-blue-200 p-3 rounded-lg">
+                                <label class="flex items-center space-x-2 text-sm font-semibold text-blue-900 cursor-pointer">
+                                    <input type="checkbox" id="chk-todos-fatura" onchange="toggleTodosFatura(this.checked)" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                                    <span>Selecionar Todos os Pendentes</span>
+                                </label>
+                                <button id="btn-baixar-lote" onclick="baixarEmLote()" disabled class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-xs md:text-sm font-bold px-4 py-2 rounded-lg transition-colors shadow flex items-center justify-center">
+                                    <i class="fa-solid fa-check-double mr-2"></i> Dar Baixa Selecionados (<span id="cont-selecionados">0</span>)
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="p-4 md:p-6 pb-20 md:pb-6 overflow-y-auto"><div id="lista-faturar" class="space-y-3"></div></div>
                     </div>
                 </section>
@@ -212,12 +296,17 @@
 
         Chart.register(ChartDataLabels);
 
-        const API_URL = "https://script.google.com/macros/s/AKfycbwQcrPuuTrcYvoJDp4kid5QdDRmkP-PuxXaNKn6oFt7gkyLZE_vy5Z-DSJhPQIqzWX1/exec"; 
+        // NOVA URL DO SEU APPS SCRIPT
+        const API_URL = "https://script.google.com/macros/s/AKfycbyFdvneUuRHcOZkfdm6s5Nxv3uXSPIzeJyMwOTrloo6A1vdZRJvqVAPlzzqsvkFASKf/exec"; 
 
         let dadosGlobais = [];
         let chartRosca = null; let chartBarras = null;
         const nomesMeses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
         let mesesSelecionados = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]; 
+
+        // CONTROLE DE ORDENAÇÃO
+        let colunaOrdenacao = 'id_linha';
+        let direcaoOrdenacao = 'desc';
 
         window.onload = function() {
             initFiltroMeses();
@@ -226,7 +315,6 @@
                 document.getElementById('tela-login').style.display = 'none';
                 document.getElementById('app-container').classList.remove('hidden');
                 
-                // SISTEMA DE CACHE AO ABRIR O APP
                 const cache = localStorage.getItem('unec_dados_cache');
                 if (cache) {
                     dadosGlobais = JSON.parse(cache);
@@ -262,7 +350,6 @@
             renderizarInterface();
         }
 
-        // NOVO LOGIN (Protegido e integrado com a API)
         async function fazerLogin(event) { 
             event.preventDefault(); 
             const user = document.getElementById('login-user').value; 
@@ -296,33 +383,49 @@
             btn.disabled = false;
         }
 
-        function sairSistema() { localStorage.removeItem('unec_logado'); localStorage.removeItem('unec_dados_cache'); document.getElementById('app-container').classList.add('hidden'); document.getElementById('tela-login').style.display = 'flex'; document.getElementById('login-senha').value = ''; document.getElementById('msg-erro').classList.add('hidden'); }
+        function sairSistema() { 
+            localStorage.removeItem('unec_logado'); 
+            localStorage.removeItem('unec_dados_cache'); 
+            document.getElementById('app-container').classList.add('hidden'); 
+            document.getElementById('tela-login').style.display = 'flex'; 
+            document.getElementById('login-senha').value = ''; 
+            document.getElementById('msg-erro').classList.add('hidden'); 
+        }
 
         function mudarAba(abaId) {
             document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.add('hidden', 'block'));
             document.querySelectorAll('.aba-conteudo').forEach(el => el.classList.remove('block'));
-            document.getElementById('tela-' + abaId).classList.remove('hidden'); document.getElementById('tela-' + abaId).classList.add('block');
+            document.getElementById('tela-' + abaId).classList.remove('hidden'); 
+            document.getElementById('tela-' + abaId).classList.add('block');
             const botoes = ['relatorios', 'cadastro', 'consulta', 'faturar'];
-            botoes.forEach(btn => { document.getElementById('btn-' + btn).classList.replace('menu-ativo', 'menu-inativo'); document.getElementById('btn-mobile-' + btn).classList.replace('menu-mobile-ativo', 'menu-mobile-inativo'); });
-            document.getElementById('btn-' + abaId).classList.replace('menu-inativo', 'menu-ativo'); document.getElementById('btn-mobile-' + abaId).classList.replace('menu-mobile-inativo', 'menu-mobile-ativo');
+            botoes.forEach(btn => { 
+                document.getElementById('btn-' + btn).classList.replace('menu-ativo', 'menu-inativo'); 
+                document.getElementById('btn-mobile-' + btn).classList.replace('menu-mobile-ativo', 'menu-mobile-inativo'); 
+            });
+            document.getElementById('btn-' + abaId).classList.replace('menu-inativo', 'menu-ativo'); 
+            document.getElementById('btn-mobile-' + abaId).classList.replace('menu-mobile-inativo', 'menu-mobile-ativo');
             const titulos = {'relatorios': 'Dashboard Gerencial', 'cadastro': 'Cadastrar', 'consulta': 'Banco de Dados', 'faturar': 'Baixas de Faturas'};
             document.getElementById('titulo-pagina').innerText = titulos[abaId];
         }
 
-        function formatarMoeda(valor) { let num = parseFloat(String(valor).replace(/[R$\s]/g, '').replace(',', '.')); return isNaN(num) ? "0,00" : num.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); }
-        function extrairNumero(valor) { let num = parseFloat(String(valor).replace(/[^\d,-]/g, '').replace(',', '.')); return isNaN(num) ? 0 : num; }
+        function formatarMoeda(valor) { 
+            let num = parseFloat(String(valor).replace(/[R$\s]/g, '').replace(',', '.')); 
+            return isNaN(num) ? "0,00" : num.toLocaleString('pt-BR', { minimumFractionDigits: 2 }); 
+        }
+        function extrairNumero(valor) { 
+            let num = parseFloat(String(valor).replace(/[^\d,-]/g, '').replace(',', '.')); 
+            return isNaN(num) ? 0 : num; 
+        }
 
-        // BUSCA ATUALIZADA (Gravando no Cache)
         async function carregarDados(forcarAtualizacao = false) {
             if (forcarAtualizacao) document.getElementById('loading-global').style.display = 'flex'; 
             document.getElementById('conteudo-principal').style.display = 'none';
             try { 
                 const response = await fetch(API_URL); 
                 dadosGlobais = await response.json(); 
-                
-                // Grava a resposta na memória do aparelho
                 localStorage.setItem('unec_dados_cache', JSON.stringify(dadosGlobais));
                 
+                aplicarOrdenacao();
                 renderizarInterface(); 
                 document.getElementById('loading-global').style.display = 'none'; 
                 document.getElementById('conteudo-principal').style.display = 'block'; 
@@ -333,7 +436,60 @@
             }
         }
 
+        // FUNÇÃO DE ORDENAÇÃO DINÂMICA
+        function ordenarTabela(coluna) {
+            if (colunaOrdenacao === coluna) {
+                if (direcaoOrdenacao === 'asc') {
+                    direcaoOrdenacao = 'desc';
+                } else if (direcaoOrdenacao === 'desc') {
+                    colunaOrdenacao = 'id_linha';
+                    direcaoOrdenacao = 'desc';
+                }
+            } else {
+                colunaOrdenacao = coluna;
+                direcaoOrdenacao = 'asc';
+            }
+            aplicarOrdenacao();
+            renderizarInterface();
+        }
+
+        function aplicarOrdenacao() {
+            dadosGlobais.sort((a, b) => {
+                if (colunaOrdenacao === 'nome') {
+                    let valA = (a.nome || '').toLowerCase();
+                    let valB = (b.nome || '').toLowerCase();
+                    return direcaoOrdenacao === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else if (colunaOrdenacao === 'valor') {
+                    let valA = extrairNumero(a.valor);
+                    let valB = extrairNumero(b.valor);
+                    return direcaoOrdenacao === 'asc' ? valA - valB : valB - valA;
+                } else if (colunaOrdenacao === 'status') {
+                    let valA = (a.status_cadastro || 'Ativo').toLowerCase();
+                    let valB = (b.status_cadastro || 'Ativo').toLowerCase();
+                    return direcaoOrdenacao === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                } else {
+                    let valA = a.id_linha || 0;
+                    let valB = b.id_linha || 0;
+                    return direcaoOrdenacao === 'asc' ? valA - valB : valB - valA;
+                }
+            });
+        }
+
+        function atualizarIconesOrdenacao() {
+            ['nome', 'valor', 'status'].forEach(col => {
+                const el = document.getElementById(`sort-icon-${col}`);
+                if (!el) return;
+                if (colunaOrdenacao === col) {
+                    el.className = direcaoOrdenacao === 'asc' ? 'fa-solid fa-sort-up text-blue-600 ml-1' : 'fa-solid fa-sort-down text-blue-600 ml-1';
+                } else {
+                    el.className = 'fa-solid fa-sort text-gray-300 ml-1';
+                }
+            });
+        }
+
         function renderizarInterface() {
+            atualizarIconesOrdenacao();
+
             let lblFiltro = ""; let lblSpan = "";
             if (mesesSelecionados.length === 12) { lblFiltro = "Ano Todo"; lblSpan = "(Ano Todo)"; } 
             else if (mesesSelecionados.length === 1) { lblFiltro = nomesMeses[mesesSelecionados[0]]; lblSpan = `(${lblFiltro})`; } 
@@ -348,12 +504,27 @@
             let contagemFormasPgto = {};
 
             let labelsGrafico = []; let arrayRealizadoGrafico = []; let arrayPrevisaoGrafico = [];
-            mesesSelecionados.forEach(mesIndex => { labelsGrafico.push(nomesMeses[mesIndex]); arrayRealizadoGrafico.push(0); arrayPrevisaoGrafico.push(0); });
+            mesesSelecionados.forEach(mesIndex => { 
+                labelsGrafico.push(nomesMeses[mesIndex]); 
+                arrayRealizadoGrafico.push(0); 
+                arrayPrevisaoGrafico.push(0); 
+            });
 
-            const tbody = document.getElementById('tabela-body'); const listaFaturar = document.getElementById('lista-faturar');
-            tbody.innerHTML = ''; listaFaturar.innerHTML = '';
+            const tbody = document.getElementById('tabela-body'); 
+            const listaFaturar = document.getElementById('lista-faturar');
+            tbody.innerHTML = ''; 
+            listaFaturar.innerHTML = '';
 
             const anoAtual = new Date().getFullYear();
+            const barraLote = document.getElementById('barra-lote-container');
+
+            if (mesesSelecionados.length === 1) {
+                barraLote.classList.remove('hidden');
+                document.getElementById('chk-todos-fatura').checked = false;
+                atualizarContadorBaixaLote();
+            } else {
+                barraLote.classList.add('hidden');
+            }
 
             dadosGlobais.forEach(item => {
                 let valorReais = extrairNumero(item.valor); 
@@ -375,11 +546,19 @@
                     arrayPrevisaoGrafico[pos] += valorReais;
                     if(st === "pago") {
                         arrayRealizadoGrafico[pos] += valorReais; 
-                        parcelasPagasNoFiltro++; valorPagoGeral += valorReais; qtdPagosGeral++;
+                        parcelasPagasNoFiltro++; 
+                        valorPagoGeral += valorReais; 
+                        qtdPagosGeral++;
                     } else {
-                        valorPendenteGeral += valorReais; qtdPendentesGeral++;
+                        valorPendenteGeral += valorReais; 
+                        qtdPendentesGeral++;
                     }
                 });
+
+                let statusCad = item.status_cadastro || "Ativo";
+                let badgeStatusCad = statusCad === "Ativo" 
+                    ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Ativo</span>`
+                    : `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-700"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Inativo</span>`;
 
                 let contHTML = `<span class="text-sm font-medium">${item.telefone || '-'}</span><br><span class="text-xs text-gray-400 break-all">${item.email || '-'}</span>`;
                 let finHTML = `<span class="font-bold text-blue-600">R$ ${formatarMoeda(item.valor)}</span><br><span class="text-xs text-gray-400">Venc: Dia ${item.dia || '-'}</span>`;
@@ -389,16 +568,38 @@
                     let totalNoFiltro = mesesSelecionados.length;
                     let corStatus = parcelasPagasNoFiltro === totalNoFiltro ? "bg-green-100 text-green-800" : (parcelasPagasNoFiltro > 0 ? "bg-blue-100 text-blue-800" : "bg-amber-100 text-amber-800");
                     let statusTxt = `${parcelasPagasNoFiltro}/${totalNoFiltro} Pagos`;
-                    tbody.innerHTML += `<tr class="border-b border-gray-100 hover:bg-gray-50 transition" data-status="${statusTxt.toLowerCase()}" data-busca="${item.nome} ${item.cpf} ${item.telefone}"><td class="px-4 md:px-6 py-4 font-medium text-gray-800">${item.nome}</td><td class="px-4 md:px-6 py-4 text-gray-600 leading-tight">${contHTML}</td><td class="px-4 md:px-6 py-4">${finHTML}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${corStatus}">${statusTxt}</span></td><td class="px-4 md:px-6 py-4">${botoesAcao}</td></tr>`;
-                    listaFaturar.innerHTML += `<div class="border border-gray-200 bg-gray-50 rounded-lg p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between" data-nome="${item.nome.toLowerCase()}"><div><p class="font-bold text-gray-800">${item.nome}</p><p class="text-xs text-gray-500 text-red-500">Selecione apenas 1 mês no filtro acima para dar baixa.</p></div><button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded font-medium shadow-sm w-full md:w-auto"><i class="fa-solid fa-lock mr-1"></i> Bloqueado</button></div>`;
+                    
+                    tbody.innerHTML += `<tr class="border-b border-gray-100 hover:bg-gray-50 transition" data-pagamento="${statusTxt.toLowerCase()}" data-status-cad="${statusCad.toLowerCase()}" data-busca="${item.nome} ${item.cpf} ${item.telefone}"><td class="px-4 md:px-6 py-4 font-medium text-gray-800">${item.nome}</td><td class="px-4 md:px-6 py-4 text-gray-600 leading-tight">${contHTML}</td><td class="px-4 md:px-6 py-4">${finHTML}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${corStatus}">${statusTxt}</span></td><td class="px-4 md:px-6 py-4">${badgeStatusCad}</td><td class="px-4 md:px-6 py-4">${botoesAcao}</td></tr>`;
+                    
+                    listaFaturar.innerHTML += `<div class="border border-gray-200 bg-gray-50 rounded-lg p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between" data-nome="${item.nome.toLowerCase()}"><div><p class="font-bold text-gray-800">${item.nome}</p><p class="text-xs text-red-500 font-medium">Selecione apenas 1 mês no filtro superior para dar baixa individual ou em lote.</p></div><button disabled class="bg-gray-300 text-gray-500 px-4 py-2 rounded font-medium shadow-sm w-full md:w-auto"><i class="fa-solid fa-lock mr-1"></i> Bloqueado</button></div>`;
                 } else {
                     let mesUnico = mesesSelecionados[0];
                     let status = item.pagamentos[mesUnico] ? String(item.pagamentos[mesUnico]).trim() : "A receber";
                     let isPago = status.toLowerCase() === "pago";
-                    let corStatus = isPago ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"; if (status.toLowerCase().includes('atrasado')) corStatus = "bg-red-100 text-red-800";
-                    tbody.innerHTML += `<tr class="border-b border-gray-100 hover:bg-gray-50 transition" data-status="${status.toLowerCase()}" data-busca="${item.nome} ${item.cpf} ${item.telefone}"><td class="px-4 md:px-6 py-4 font-medium text-gray-800">${item.nome}</td><td class="px-4 md:px-6 py-4 text-gray-600 leading-tight">${contHTML}</td><td class="px-4 md:px-6 py-4">${finHTML}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${corStatus}">${status}</span></td><td class="px-4 md:px-6 py-4">${botoesAcao}</td></tr>`;
-                    let btnFaturar = isPago ? `<button disabled class="bg-gray-200 text-gray-500 px-4 py-2 rounded font-medium w-full md:w-auto"><i class="fa-solid fa-check mr-1"></i> Já Pago</button>` : `<button onclick="registrarPagamento(${item.id_linha})" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow w-full md:w-auto"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Receber (${nomesMeses[mesUnico]})</button>`;
-                    listaFaturar.innerHTML += `<div class="fatura-item border ${isPago ? 'border-gray-200 bg-gray-50' : 'border-blue-100 bg-white shadow-sm'} rounded-lg p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between" data-nome="${item.nome.toLowerCase()}"><div><p class="font-bold ${isPago ? 'text-gray-500 line-through' : 'text-gray-800'}">${item.nome}</p><p class="text-xs text-gray-500">R$ ${formatarMoeda(item.valor)} | Dia ${item.dia || '-'}</p></div><div>${btnFaturar}</div></div>`;
+                    let corStatus = isPago ? "bg-green-100 text-green-800" : "bg-amber-100 text-amber-800"; 
+                    if (status.toLowerCase().includes('atrasado')) corStatus = "bg-red-100 text-red-800";
+                    
+                    tbody.innerHTML += `<tr class="border-b border-gray-100 hover:bg-gray-50 transition" data-pagamento="${status.toLowerCase()}" data-status-cad="${statusCad.toLowerCase()}" data-busca="${item.nome} ${item.cpf} ${item.telefone}"><td class="px-4 md:px-6 py-4 font-medium text-gray-800">${item.nome}</td><td class="px-4 md:px-6 py-4 text-gray-600 leading-tight">${contHTML}</td><td class="px-4 md:px-6 py-4">${finHTML}</td><td class="px-4 md:px-6 py-4"><span class="px-2 py-1 rounded-full text-xs font-medium ${corStatus}">${status}</span></td><td class="px-4 md:px-6 py-4">${badgeStatusCad}</td><td class="px-4 md:px-6 py-4">${botoesAcao}</td></tr>`;
+                    
+                    let btnFaturar = isPago 
+                        ? `<button disabled class="bg-gray-200 text-gray-500 px-4 py-2 rounded font-medium w-full md:w-auto"><i class="fa-solid fa-check mr-1"></i> Já Pago</button>` 
+                        : `<button onclick="registrarPagamento(${item.id_linha})" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow w-full md:w-auto"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> Receber (${nomesMeses[mesUnico]})</button>`;
+                    
+                    let seletorLote = isPago 
+                        ? `<span class="w-5 h-5 flex items-center justify-center text-green-600"><i class="fa-solid fa-check"></i></span>`
+                        : `<input type="checkbox" value="${item.id_linha}" onchange="atualizarContadorBaixaLote()" class="chk-fatura-item w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 cursor-pointer">`;
+
+                    listaFaturar.innerHTML += `
+                        <div class="fatura-item border ${isPago ? 'border-gray-200 bg-gray-50' : 'border-blue-100 bg-white shadow-sm'} rounded-lg p-4 flex flex-col md:flex-row gap-3 md:items-center justify-between" data-nome="${item.nome.toLowerCase()}">
+                            <div class="flex items-center space-x-3">
+                                ${seletorLote}
+                                <div>
+                                    <p class="font-bold ${isPago ? 'text-gray-400 line-through' : 'text-gray-800'}">${item.nome}</p>
+                                    <p class="text-xs text-gray-500">R$ ${formatarMoeda(item.valor)} | Venc: Dia ${item.dia || '-'} | <span class="font-medium ${statusCad === 'Ativo' ? 'text-green-600' : 'text-red-500'}">${statusCad}</span></p>
+                                </div>
+                            </div>
+                            <div>${btnFaturar}</div>
+                        </div>`;
                 }
             });
 
@@ -415,7 +616,8 @@
             desenharGraficoBarras(labelsGrafico, arrayPrevisaoGrafico, arrayRealizadoGrafico); 
             desenharGraficoRosca(contagemFormasPgto);
             
-            document.getElementById('loading-tabela').style.display = 'none'; document.getElementById('tabela-container').classList.remove('hidden');
+            document.getElementById('loading-tabela').style.display = 'none'; 
+            document.getElementById('tabela-container').classList.remove('hidden');
         }
 
         function desenharGraficoBarras(labels, dadosPrevisao, dadosRealizado) {
@@ -429,27 +631,206 @@
             chartRosca = new Chart(ctxDoughnut, { type: 'doughnut', data: { labels: labelsPgto, datasets: [{ data: valoresPgto, backgroundColor: paletaCores.slice(0, labelsPgto.length), borderWidth: 2, borderColor: '#ffffff' }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } }, datalabels: { color: '#ffffff', font: { size: 14, weight: 'bold' }, formatter: (value) => { return value > 0 ? value : ''; } } } } });
         }
 
-        async function registrarPagamento(idLinha) { let mesUnico = mesesSelecionados[0]; if(!confirm(`Confirmar o pagamento de ${nomesMeses[mesUnico]}?`)) return; try { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ acao: "atualizar_status", id_linha: idLinha, mes_index: mesUnico, novo_status: "Pago" }) }); alert("Sucesso!"); carregarDados(true); } catch (e) { alert("Erro ao atualizar."); } }
-        function filtrarConsulta() { const t = document.getElementById('busca-consulta').value.toLowerCase(); const s = document.getElementById('filtro-status').value.toLowerCase(); document.querySelectorAll('#tabela-body tr').forEach(linha => { const buscaValida = linha.getAttribute('data-busca').toLowerCase().includes(t); const statusValido = (s === "" || linha.getAttribute('data-status').includes(s)); linha.style.display = (buscaValida && statusValido) ? '' : 'none'; }); }
-        function filtrarFaturas() { let t = document.getElementById('busca-faturar').value.toLowerCase(); document.querySelectorAll('.fatura-item').forEach(item => { item.style.display = item.getAttribute('data-nome').includes(t) ? 'flex' : 'none'; }); }
-        function prepararDadosExportacao() { let cabecalho = ["Nome", "RG", "CPF", "Endereço", "Número", "Bairro", "Cidade", "CEP", "Telefone", "E-mail", "Valor", "Forma Pagamento", "Dia Venc", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]; let linhas = [cabecalho]; dadosGlobais.forEach(item => { let linha = [ item.nome || '', item.rg || '', item.cpf || '', item.endereco || '', item.numero || '', item.bairro || '', item.cidade || '', item.cep || '', item.telefone || '', item.email || '', formatarMoeda(item.valor), item.forma_pagamento || '', item.dia || '' ]; item.pagamentos.forEach(st => linha.push(st)); linhas.push(linha); }); return linhas; }
+        // BAIXAS INDIVIDUAIS E EM LOTE
+        async function registrarPagamento(idLinha) { 
+            let mesUnico = mesesSelecionados[0]; 
+            if(!confirm(`Confirmar o pagamento de ${nomesMeses[mesUnico]}?`)) return; 
+            document.getElementById('loading-global').style.display = 'flex';
+            try { 
+                await fetch(API_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ acao: "atualizar_status", id_linha: idLinha, mes_index: mesUnico, novo_status: "Pago" }) 
+                }); 
+                alert("Pagamento registrado com sucesso!"); 
+                carregarDados(true); 
+            } catch (e) { 
+                alert("Erro ao atualizar."); 
+                document.getElementById('loading-global').style.display = 'none';
+            } 
+        }
+
+        function toggleTodosFatura(marcado) {
+            document.querySelectorAll('.chk-fatura-item').forEach(chk => chk.checked = marcado);
+            atualizarContadorBaixaLote();
+        }
+
+        function atualizarContadorBaixaLote() {
+            const selecionados = document.querySelectorAll('.chk-fatura-item:checked').length;
+            const btn = document.getElementById('btn-baixar-lote');
+            document.getElementById('cont-selecionados').innerText = selecionados;
+            btn.disabled = (selecionados === 0);
+        }
+
+        async function baixarEmLote() {
+            const selecionados = Array.from(document.querySelectorAll('.chk-fatura-item:checked')).map(chk => parseInt(chk.value));
+            if (selecionados.length === 0) return;
+
+            let mesUnico = mesesSelecionados[0];
+            if (!confirm(`Dar baixa em ${selecionados.length} mantenedor(es) para o mês de ${nomesMeses[mesUnico]}?`)) return;
+
+            document.getElementById('loading-global').style.display = 'flex';
+
+            const payload = {
+                acao: "baixar_lote",
+                pagamentos: selecionados.map(id => ({ id_linha: id, mes_index: mesUnico }))
+            };
+
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                alert("Baixas em lote realizadas com sucesso!");
+                carregarDados(true);
+            } catch (e) {
+                alert("Erro ao processar baixa em lote.");
+                document.getElementById('loading-global').style.display = 'none';
+            }
+        }
+
+        // FILTROS DA TABELA CONSULTA
+        function filtrarConsulta() { 
+            const termo = document.getElementById('busca-consulta').value.toLowerCase().trim(); 
+            const filtro = document.getElementById('filtro-status').value.toLowerCase(); 
+            
+            document.querySelectorAll('#tabela-body tr').forEach(linha => { 
+                const buscaValida = linha.getAttribute('data-busca').toLowerCase().includes(termo); 
+                const pgtoStatus = linha.getAttribute('data-pagamento') || "";
+                const cadStatus = linha.getAttribute('data-status-cad') || "";
+
+                let filtroValido = true;
+                if (filtro === "pago" || filtro === "a receber") {
+                    filtroValido = pgtoStatus.includes(filtro);
+                } else if (filtro === "status:ativo") {
+                    filtroValido = (cadStatus === "ativo");
+                } else if (filtro === "status:inativo") {
+                    filtroValido = (cadStatus === "inativo");
+                }
+
+                linha.style.display = (buscaValida && filtroValido) ? '' : 'none'; 
+            }); 
+        }
+
+        function filtrarFaturas() { 
+            let t = document.getElementById('busca-faturar').value.toLowerCase(); 
+            document.querySelectorAll('.fatura-item').forEach(item => { 
+                item.style.display = item.getAttribute('data-nome').includes(t) ? 'flex' : 'none'; 
+            }); 
+        }
+
+        function prepararDadosExportacao() { 
+            let cabecalho = ["Nome", "RG", "CPF", "Endereço", "Número", "Bairro", "Cidade", "CEP", "Telefone", "E-mail", "Valor", "Forma Pagamento", "Dia Venc", "Status", "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"]; 
+            let linhas = [cabecalho]; 
+            dadosGlobais.forEach(item => { 
+                let linha = [ 
+                    item.nome || '', item.rg || '', item.cpf || '', item.endereco || '', 
+                    item.numero || '', item.bairro || '', item.cidade || '', item.cep || '', 
+                    item.telefone || '', item.email || '', formatarMoeda(item.valor), 
+                    item.forma_pagamento || '', item.dia || '', item.status_cadastro || 'Ativo'
+                ]; 
+                item.pagamentos.forEach(st => linha.push(st)); 
+                linhas.push(linha); 
+            }); 
+            return linhas; 
+        }
+
         function exportarExcel() { const dados = prepararDadosExportacao(); const ws = XLSX.utils.aoa_to_sheet(dados); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Mantenedores"); XLSX.writeFile(wb, "Banco_Dados_UNEC.xlsx"); }
-        function exportarPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); const dados = prepararDadosExportacao(); doc.setFontSize(14); doc.text("Relatório Geral - UNEC System", 14, 15); doc.autoTable({ head: [dados[0]], body: dados.slice(1), startY: 20, styles: { fontSize: 5, cellPadding: 1 }, headStyles: { fillColor: [37, 99, 235] }, theme: 'striped' }); doc.save("Relatorio_UNEC.pdf"); }
+        function exportarPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); const dados = prepararDadosExportacao(); doc.setFontSize(14); doc.text("Relatório Geral - Painel UNEC", 14, 15); doc.autoTable({ head: [dados[0]], body: dados.slice(1), startY: 20, styles: { fontSize: 5, cellPadding: 1 }, headStyles: { fillColor: [37, 99, 235] }, theme: 'striped' }); doc.save("Relatorio_UNEC.pdf"); }
         function exportarCSV() { const dados = prepararDadosExportacao(); let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; dados.forEach(row => { let rowStr = row.map(cell => `"${cell}"`).join(";"); csvContent += rowStr + "\n"; }); const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Banco_Dados_UNEC.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
-        function limparFormulario() { document.querySelector('form').reset(); document.getElementById('c-id-linha').value = ""; document.getElementById('titulo-form-cadastro').innerHTML = '<i class="fa-solid fa-address-card mr-2 text-blue-600"></i>Cadastro Manual'; document.getElementById('btn-cad').innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> Salvar na Planilha'; }
-        function prepararEdicao(id) { const pessoa = dadosGlobais.find(d => d.id_linha === id); if(!pessoa) return; document.getElementById('c-id-linha').value = pessoa.id_linha; document.getElementById('c-nome').value = pessoa.nome || ''; document.getElementById('c-rg').value = pessoa.rg || ''; document.getElementById('c-cpf').value = pessoa.cpf || ''; document.getElementById('c-tel').value = pessoa.telefone || ''; document.getElementById('c-email').value = pessoa.email || ''; document.getElementById('c-end').value = pessoa.endereco || ''; document.getElementById('c-num').value = pessoa.numero || ''; document.getElementById('c-cep').value = pessoa.cep || ''; document.getElementById('c-bairro').value = pessoa.bairro || ''; document.getElementById('c-cidade').value = pessoa.cidade || ''; document.getElementById('c-valor').value = pessoa.valor || ''; if(pessoa.dia) document.getElementById('c-dia').value = String(pessoa.dia).padStart(2, '0'); if(pessoa.forma_pagamento) document.getElementById('c-forma').value = pessoa.forma_pagamento; document.getElementById('titulo-form-cadastro').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2 text-blue-600"></i>Editar Cadastro: ' + pessoa.nome; document.getElementById('btn-cad').innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Alterações'; mudarAba('cadastro'); }
-        async function excluirCadastro(id) { if(!confirm("Deseja EXCLUIR este cadastro?")) return; document.getElementById('loading-global').style.display = 'flex'; try { await fetch(API_URL, { method: 'POST', body: JSON.stringify({ acao: "excluir", id_linha: id }) }); alert("Excluído com sucesso!"); carregarDados(true); } catch (e) { alert("Erro ao excluir."); document.getElementById('loading-global').style.display = 'none'; } }
+        // CADASTRO E EDIÇÃO COM LIMPEZA AUTOMÁTICA
+        function limparFormulario() { 
+            const form = document.querySelector('#tela-cadastro form');
+            if (form) form.reset(); 
+            document.getElementById('c-id-linha').value = ""; 
+            document.getElementById('c-status').value = "Ativo";
+            document.getElementById('c-dia').value = "05";
+            document.getElementById('c-forma').value = "Pix";
+            document.getElementById('c-valor').value = "";
+            document.getElementById('titulo-form-cadastro').innerHTML = '<i class="fa-solid fa-address-card mr-2 text-blue-600"></i>Cadastro Manual'; 
+            document.getElementById('btn-cad').innerHTML = '<i class="fa-solid fa-cloud-arrow-up mr-2"></i> Salvar na Planilha'; 
+        }
+
+        function prepararEdicao(id) { 
+            const pessoa = dadosGlobais.find(d => d.id_linha === id); 
+            if(!pessoa) return; 
+            
+            document.getElementById('c-id-linha').value = pessoa.id_linha; 
+            document.getElementById('c-nome').value = pessoa.nome || ''; 
+            document.getElementById('c-rg').value = pessoa.rg || ''; 
+            document.getElementById('c-cpf').value = pessoa.cpf || ''; 
+            document.getElementById('c-tel').value = pessoa.telefone || ''; 
+            document.getElementById('c-email').value = pessoa.email || ''; 
+            document.getElementById('c-end').value = pessoa.endereco || ''; 
+            document.getElementById('c-num').value = pessoa.numero || ''; 
+            document.getElementById('c-cep').value = pessoa.cep || ''; 
+            document.getElementById('c-bairro').value = pessoa.bairro || ''; 
+            document.getElementById('c-cidade').value = pessoa.cidade || ''; 
+            
+            let valFmt = formatarMoeda(pessoa.valor);
+            let selectValor = document.getElementById('c-valor');
+            let existe = Array.from(selectValor.options).some(opt => opt.value === valFmt);
+            if (!existe && valFmt !== "0,00") {
+                selectValor.add(new Option(`R$ ${valFmt} (Custom)`, valFmt));
+            }
+            selectValor.value = valFmt;
+
+            if(pessoa.dia) document.getElementById('c-dia').value = String(pessoa.dia).padStart(2, '0'); 
+            if(pessoa.forma_pagamento) document.getElementById('c-forma').value = pessoa.forma_pagamento; 
+            document.getElementById('c-status').value = pessoa.status_cadastro || 'Ativo';
+
+            document.getElementById('titulo-form-cadastro').innerHTML = '<i class="fa-solid fa-pen-to-square mr-2 text-blue-600"></i>Editar Cadastro: ' + pessoa.nome; 
+            document.getElementById('btn-cad').innerHTML = '<i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Alterações'; 
+            mudarAba('cadastro'); 
+        }
+
+        async function excluirCadastro(id) { 
+            if(!confirm("Deseja EXCLUIR este cadastro?")) return; 
+            document.getElementById('loading-global').style.display = 'flex'; 
+            try { 
+                await fetch(API_URL, { method: 'POST', body: JSON.stringify({ acao: "excluir", id_linha: id }) }); 
+                alert("Excluído com sucesso!"); 
+                carregarDados(true); 
+            } catch (e) { 
+                alert("Erro ao excluir."); 
+                document.getElementById('loading-global').style.display = 'none'; 
+            } 
+        }
         
         async function salvarCadastro(event) {
-            event.preventDefault(); const btn = document.getElementById('btn-cad'); const idLinha = document.getElementById('c-id-linha').value; const acaoDefinida = idLinha ? "editar" : "cadastrar"; btn.innerHTML = "Processando..."; btn.disabled = true;
-            const novoDado = { acao: acaoDefinida, id_linha: idLinha, nome: document.getElementById('c-nome').value, rg: document.getElementById('c-rg').value, cpf: document.getElementById('c-cpf').value, telefone: document.getElementById('c-tel').value, email: document.getElementById('c-email').value, endereco: document.getElementById('c-end').value, numero: document.getElementById('c-num').value, cep: document.getElementById('c-cep').value, bairro: document.getElementById('c-bairro').value, cidade: document.getElementById('c-cidade').value, valor: document.getElementById('c-valor').value, dia: document.getElementById('c-dia').value, forma_pagamento: document.getElementById('c-forma').value };
+            event.preventDefault(); 
+            const btn = document.getElementById('btn-cad'); 
+            const idLinha = document.getElementById('c-id-linha').value; 
+            const acaoDefinida = idLinha ? "editar" : "cadastrar"; 
+            
+            btn.innerHTML = "Processando..."; 
+            btn.disabled = true;
+
+            const novoDado = { 
+                acao: acaoDefinida, 
+                id_linha: idLinha, 
+                nome: document.getElementById('c-nome').value, 
+                rg: document.getElementById('c-rg').value, 
+                cpf: document.getElementById('c-cpf').value, 
+                telefone: document.getElementById('c-tel').value, 
+                email: document.getElementById('c-email').value, 
+                endereco: document.getElementById('c-end').value, 
+                numero: document.getElementById('c-num').value, 
+                cep: document.getElementById('c-cep').value, 
+                bairro: document.getElementById('c-bairro').value, 
+                cidade: document.getElementById('c-cidade').value, 
+                valor: document.getElementById('c-valor').value, 
+                dia: document.getElementById('c-dia').value, 
+                forma_pagamento: document.getElementById('c-forma').value,
+                status_cadastro: document.getElementById('c-status').value
+            };
+
             try { 
                 const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(novoDado) }); 
                 const result = await response.json();
                 
                 if (result.status === "ocupado") {
-                    alert("O servidor está ocupado. Outra pessoa pode estar salvando. Tente novamente em instantes.");
+                    alert("O servidor está ocupado. Tente novamente em instantes.");
                 } else {
                     alert(acaoDefinida === "editar" ? "Atualizado com sucesso!" : "Salvo com sucesso!"); 
                     limparFormulario(); 
@@ -459,7 +840,8 @@
             } catch (error) { 
                 alert("Erro ao salvar."); 
             } 
-            btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up mr-2'></i> Salvar na Planilha"; btn.disabled = false;
+            btn.innerHTML = "<i class='fa-solid fa-cloud-arrow-up mr-2'></i> Salvar na Planilha"; 
+            btn.disabled = false;
         }
     </script>
 </body>
