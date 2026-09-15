@@ -159,10 +159,10 @@
                                     <label class="block text-xs font-semibold text-gray-500 mb-1">Valor Mensal</label>
                                     <select id="c-valor" required class="w-full border rounded-lg p-3 outline-none bg-white cursor-pointer focus:ring-2 focus:ring-blue-500">
                                         <option value="" disabled selected>Selecione o valor...</option>
-                                        <option value="20,00">R$ 20,00</option>
-                                        <option value="30,00">R$ 30,00</option>
-                                        <option value="50,00">R$ 50,00</option>
-                                        <option value="100,00">R$ 100,00</option>
+                                        <option value="20,00" class="opt-fixa">R$ 20,00</option>
+                                        <option value="30,00" class="opt-fixa">R$ 30,00</option>
+                                        <option value="50,00" class="opt-fixa">R$ 50,00</option>
+                                        <option value="100,00" class="opt-fixa">R$ 100,00</option>
                                     </select>
                                 </div>
                                 <div>
@@ -296,7 +296,7 @@
 
         Chart.register(ChartDataLabels);
 
-        // NOVA URL DO SEU APPS SCRIPT
+        // LINK CORRETO DO SEU APPS SCRIPT
         const API_URL = "https://script.google.com/macros/s/AKfycbyFdvneUuRHcOZkfdm6s5Nxv3uXSPIzeJyMwOTrloo6A1vdZRJvqVAPlzzqsvkFASKf/exec"; 
 
         let dadosGlobais = [];
@@ -688,7 +688,7 @@
             }
         }
 
-        // FILTROS DA TABELA CONSULTA
+        // FILTROS DA TABELA CONSULTA CORRIGIDO
         function filtrarConsulta() { 
             const termo = document.getElementById('busca-consulta').value.toLowerCase().trim(); 
             const filtro = document.getElementById('filtro-status').value.toLowerCase(); 
@@ -699,11 +699,20 @@
                 const cadStatus = linha.getAttribute('data-status-cad') || "";
 
                 let filtroValido = true;
-                if (filtro === "pago" || filtro === "a receber") {
-                    filtroValido = pgtoStatus.includes(filtro);
-                } else if (filtro === "status:ativo") {
+                
+                if (filtro === "pago") {
+                    // Só é válido se for exatamente "pago" (mês único) ou se tiver a palavra "pagos" mas não começar com "0/" (ano todo)
+                    filtroValido = (pgtoStatus === "pago") || (pgtoStatus.includes("pagos") && !pgtoStatus.startsWith("0/"));
+                } 
+                else if (filtro === "a receber") {
+                    // É válido se for "a receber", "atrasado", ou se o lote não estiver 100% pago
+                    let todosPagos = !!pgtoStatus.match(/^(\d+)\/\1\b/); // Checa se é ex: 12/12
+                    filtroValido = pgtoStatus.includes("a receber") || pgtoStatus.includes("atrasado") || (pgtoStatus.includes("pagos") && !todosPagos);
+                } 
+                else if (filtro === "status:ativo") {
                     filtroValido = (cadStatus === "ativo");
-                } else if (filtro === "status:inativo") {
+                } 
+                else if (filtro === "status:inativo") {
                     filtroValido = (cadStatus === "inativo");
                 }
 
@@ -738,10 +747,19 @@
         function exportarPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); const dados = prepararDadosExportacao(); doc.setFontSize(14); doc.text("Relatório Geral - Painel UNEC", 14, 15); doc.autoTable({ head: [dados[0]], body: dados.slice(1), startY: 20, styles: { fontSize: 5, cellPadding: 1 }, headStyles: { fillColor: [37, 99, 235] }, theme: 'striped' }); doc.save("Relatorio_UNEC.pdf"); }
         function exportarCSV() { const dados = prepararDadosExportacao(); let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; dados.forEach(row => { let rowStr = row.map(cell => `"${cell}"`).join(";"); csvContent += rowStr + "\n"; }); const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Banco_Dados_UNEC.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
-        // CADASTRO E EDIÇÃO COM LIMPEZA AUTOMÁTICA
+        // CADASTRO E EDIÇÃO COM LIMPEZA AUTOMÁTICA OTIMIZADA
         function limparFormulario() { 
             const form = document.querySelector('#tela-cadastro form');
             if (form) form.reset(); 
+            
+            // Remove opções customizadas geradas na edição
+            const selectValor = document.getElementById('c-valor');
+            Array.from(selectValor.options).forEach(opt => {
+                if (!opt.classList.contains('opt-fixa') && opt.value !== "") {
+                    selectValor.remove(opt.index);
+                }
+            });
+
             document.getElementById('c-id-linha').value = ""; 
             document.getElementById('c-status').value = "Ativo";
             document.getElementById('c-dia').value = "05";
@@ -755,6 +773,8 @@
             const pessoa = dadosGlobais.find(d => d.id_linha === id); 
             if(!pessoa) return; 
             
+            limparFormulario(); // Limpa sujeiras antes de preencher
+
             document.getElementById('c-id-linha').value = pessoa.id_linha; 
             document.getElementById('c-nome').value = pessoa.nome || ''; 
             document.getElementById('c-rg').value = pessoa.rg || ''; 
