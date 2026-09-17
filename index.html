@@ -44,7 +44,7 @@
     <div id="tela-login" class="flex h-screen w-full items-center justify-center bg-slate-900 absolute z-[100] px-4">
         <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-sm text-center">
             <div class="h-16 w-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="fa-solid fa-church"></i></div>
-            <h2 class="text-2xl font-bold text-gray-800 mb-1">Painel <span class="text-blue-600">UNEC</span></h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-1">Painel <span class="text-blue-600">UNEC - PB</span></h2>
             <p class="text-sm text-gray-500 mb-8">Faça login para acessar o painel</p>
             <form onsubmit="fazerLogin(event)" class="space-y-4">
                 <div class="relative"><i class="fa-solid fa-user absolute left-3 top-3.5 text-gray-400"></i><input type="text" id="login-user" required placeholder="Usuário" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 text-left cursor-text"></div>
@@ -60,7 +60,7 @@
         
         <!-- MENU LATERAL (DESKTOP) -->
         <aside class="w-64 bg-slate-900 text-white flex-col shadow-xl flex-shrink-0 z-20 hidden md:flex">
-            <div class="h-16 flex items-center px-6 border-b border-slate-700 bg-slate-950"><i class="fa-solid fa-church text-blue-400 text-xl mr-3"></i><h1 class="text-lg font-bold tracking-wider">Painel <span class="text-blue-400">UNEC</span></h1></div>
+            <div class="h-16 flex items-center px-6 border-b border-slate-700 bg-slate-950"><i class="fa-solid fa-church text-blue-400 text-xl mr-3"></i><h1 class="text-lg font-bold tracking-wider">Painel <span class="text-blue-400">UNEC - PB</span></h1></div>
             <nav class="flex-1 px-4 py-6 space-y-2">
                 <button onclick="mudarAba('relatorios')" id="btn-relatorios" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-ativo"><i class="fa-solid fa-chart-pie w-6 text-left"></i><span class="font-medium">Relatórios</span></button>
                 <button onclick="limparFormulario(); mudarAba('cadastro')" id="btn-cadastro" class="w-full flex items-center px-4 py-3 rounded-lg transition-colors menu-inativo"><i class="fa-solid fa-user-plus w-6 text-left"></i><span class="font-medium">Cadastrar</span></button>
@@ -111,7 +111,7 @@
                 <button onclick="sairSistema()" class="md:hidden ml-2 text-gray-400 hover:text-red-500"><i class="fa-solid fa-right-from-bracket text-xl"></i></button>
             </header>
 
-            <div class="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center" id="loading-global">
+            <div class="absolute inset-0 bg-white/80 z-50 flex flex-col items-center justify-center" id="loading-global" style="display: none;">
                 <i class="fa-solid fa-circle-notch fa-spin text-5xl text-blue-600 mb-4"></i><p class="font-medium text-gray-600">Sincronizando com o Google...</p>
             </div>
 
@@ -318,9 +318,16 @@
                 const cache = localStorage.getItem('unec_dados_cache');
                 if (cache) {
                     dadosGlobais = JSON.parse(cache);
+                    // Correção: Esconde a tela de carregamento e mostra o conteúdo imediatamente
+                    document.getElementById('loading-global').style.display = 'none';
+                    document.getElementById('conteudo-principal').style.display = 'block';
                     renderizarInterface();
+                    
+                    // Faz uma atualização invisível no fundo para manter os dados sempre frescos
+                    carregarDados(false);
                 } else {
-                    carregarDados();
+                    // Se não tiver cache, força a tela de carregamento
+                    carregarDados(true);
                 }
             }
         };
@@ -371,7 +378,8 @@
                     localStorage.setItem('unec_logado', 'sim'); 
                     document.getElementById('tela-login').style.display = 'none'; 
                     document.getElementById('app-container').classList.remove('hidden'); 
-                    carregarDados(); 
+                    // Força a tela de carregamento no primeiro login
+                    carregarDados(true); 
                 } else {
                     document.getElementById('msg-erro').classList.remove('hidden');
                 }
@@ -418,8 +426,10 @@
         }
 
         async function carregarDados(forcarAtualizacao = false) {
-            if (forcarAtualizacao) document.getElementById('loading-global').style.display = 'flex'; 
-            document.getElementById('conteudo-principal').style.display = 'none';
+            if (forcarAtualizacao) {
+                document.getElementById('loading-global').style.display = 'flex'; 
+                document.getElementById('conteudo-principal').style.display = 'none';
+            }
             try { 
                 const response = await fetch(API_URL); 
                 dadosGlobais = await response.json(); 
@@ -427,12 +437,16 @@
                 
                 aplicarOrdenacao();
                 renderizarInterface(); 
+                
+                // Sempre garante que o painel apareça após a requisição
                 document.getElementById('loading-global').style.display = 'none'; 
                 document.getElementById('conteudo-principal').style.display = 'block'; 
             } catch (error) { 
-                alert("Erro ao conectar ao Google. Usando dados da memória se houver."); 
-                document.getElementById('loading-global').style.display = 'none';
-                document.getElementById('conteudo-principal').style.display = 'block'; 
+                if (forcarAtualizacao) {
+                    alert("Erro ao conectar ao Google. Usando dados da memória se houver."); 
+                    document.getElementById('loading-global').style.display = 'none';
+                    document.getElementById('conteudo-principal').style.display = 'block'; 
+                }
             }
         }
 
@@ -688,7 +702,7 @@
             }
         }
 
-        // FILTROS DA TABELA CONSULTA CORRIGIDO
+        // FILTROS DA TABELA CONSULTA
         function filtrarConsulta() { 
             const termo = document.getElementById('busca-consulta').value.toLowerCase().trim(); 
             const filtro = document.getElementById('filtro-status').value.toLowerCase(); 
@@ -701,12 +715,10 @@
                 let filtroValido = true;
                 
                 if (filtro === "pago") {
-                    // Só é válido se for exatamente "pago" (mês único) ou se tiver a palavra "pagos" mas não começar com "0/" (ano todo)
                     filtroValido = (pgtoStatus === "pago") || (pgtoStatus.includes("pagos") && !pgtoStatus.startsWith("0/"));
                 } 
                 else if (filtro === "a receber") {
-                    // É válido se for "a receber", "atrasado", ou se o lote não estiver 100% pago
-                    let todosPagos = !!pgtoStatus.match(/^(\d+)\/\1\b/); // Checa se é ex: 12/12
+                    let todosPagos = !!pgtoStatus.match(/^(\d+)\/\1\b/);
                     filtroValido = pgtoStatus.includes("a receber") || pgtoStatus.includes("atrasado") || (pgtoStatus.includes("pagos") && !todosPagos);
                 } 
                 else if (filtro === "status:ativo") {
@@ -743,9 +755,9 @@
             return linhas; 
         }
 
-        function exportarExcel() { const dados = prepararDadosExportacao(); const ws = XLSX.utils.aoa_to_sheet(dados); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Mantenedores"); XLSX.writeFile(wb, "Banco_Dados_UNEC.xlsx"); }
-        function exportarPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); const dados = prepararDadosExportacao(); doc.setFontSize(14); doc.text("Relatório Geral - Painel UNEC", 14, 15); doc.autoTable({ head: [dados[0]], body: dados.slice(1), startY: 20, styles: { fontSize: 5, cellPadding: 1 }, headStyles: { fillColor: [37, 99, 235] }, theme: 'striped' }); doc.save("Relatorio_UNEC.pdf"); }
-        function exportarCSV() { const dados = prepararDadosExportacao(); let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; dados.forEach(row => { let rowStr = row.map(cell => `"${cell}"`).join(";"); csvContent += rowStr + "\n"; }); const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Banco_Dados_UNEC.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
+        function exportarExcel() { const dados = prepararDadosExportacao(); const ws = XLSX.utils.aoa_to_sheet(dados); const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Mantenedores"); XLSX.writeFile(wb, "Banco_Dados_UNEC_PB.xlsx"); }
+        function exportarPDF() { const { jsPDF } = window.jspdf; const doc = new jsPDF('landscape'); const dados = prepararDadosExportacao(); doc.setFontSize(14); doc.text("Relatório Geral - Painel UNEC - PB", 14, 15); doc.autoTable({ head: [dados[0]], body: dados.slice(1), startY: 20, styles: { fontSize: 5, cellPadding: 1 }, headStyles: { fillColor: [37, 99, 235] }, theme: 'striped' }); doc.save("Relatorio_UNEC_PB.pdf"); }
+        function exportarCSV() { const dados = prepararDadosExportacao(); let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; dados.forEach(row => { let rowStr = row.map(cell => `"${cell}"`).join(";"); csvContent += rowStr + "\n"; }); const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent)); link.setAttribute("download", `Banco_Dados_UNEC_PB.csv`); document.body.appendChild(link); link.click(); document.body.removeChild(link); }
 
         // CADASTRO E EDIÇÃO COM LIMPEZA AUTOMÁTICA OTIMIZADA
         function limparFormulario() { 
